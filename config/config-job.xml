@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description>鸿坤金服测试环境无等待更新测试环境</description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.3">
+      <gitLabConnection>penn-connection</gitLabConnection>
+    </com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <org.jvnet.hudson.plugins.SSHBuilder plugin="ssh@2.5">
+      <siteName>develop@192.168.1.249:22</siteName>
+      <command>export JAVA_HOME=/opt/jdk1.8.0_112
+
+#创建并运行容器,执行config.inf中对应的节点
+sh /data/www/projects/docker_share/switch.sh hk_master
+#sh /data/www/projects/docker_share_multi/switch.sh hk_master</command>
+      <execEachLine>false</execEachLine>
+    </org.jvnet.hudson.plugins.SSHBuilder>
+    <hudson.tasks.Shell>
+      <command>#创建dubbo-admin监听服务
+sh /data/www/tools/dda/add-dda.sh hkjf 8594</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <com.ztbsuper.dingding.DingdingNotifier plugin="dingding-notifications@1.4">
+      <accessToken>e3013c679bc1f8a445453de1596d01ef96653ce98fa2dc925df8a3a2ba22ba63</accessToken>
+      <onStart>true</onStart>
+      <onSuccess>true</onSuccess>
+      <onFailed>true</onFailed>
+      <jenkinsURL>http://192.168.1.250:8080/jenkins/</jenkinsURL>
+    </com.ztbsuper.dingding.DingdingNotifier>
+  </publishers>
+  <buildWrappers/>
+</project>
