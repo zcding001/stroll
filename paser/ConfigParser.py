@@ -55,4 +55,4 @@ class ConfigParser:
               % (src_path, dst_path, env_path, producer_list, customer_list,
                  customer_port_list, branch_name, proxy_port, backup_suffix))
 
-ConfigParser("hk_master1")
+ConfigParser("hk_master")
