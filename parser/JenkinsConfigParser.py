@@ -4,7 +4,7 @@
 from xml.dom.minidom import parse
 import xml.dom.minidom as minidom
 import os
-
+from ConfigParser import ConfigParser
 
 class JenkinsConfigParser:
 
@@ -74,5 +74,6 @@ class JenkinsConfigParser:
         return e
 
 
-if ( __name__ == "__main__"):
+if __name__ == "__main__":
     JenkinsConfigParser()
+

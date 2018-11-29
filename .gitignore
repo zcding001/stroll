@@ -1,0 +1,44 @@
+# common
+
+#java class
+*.class
+
+# maven ignore
+target/
+*.jar
+*.war
+*.zip
+*.tar
+*.tar.gz
+
+# eclipse ignore
+.settings/
+.project
+.classpath
+.tern-project
+
+# idea ignore
+.idea/
+*.ipr
+*.iml
+*.iws
+
+# temp ignore
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+
+# system ignore
+.DS_Store
+Thumbs.d
+/bin
+.externalToolBuilders
+startModule/
+*rebel-remote.xml.bak
+*rebel.xml
+/.metadata/
+
+# properties
+*.env_dev.properties

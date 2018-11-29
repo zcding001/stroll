@@ -55,4 +55,6 @@ class ConfigParser:
               % (src_path, dst_path, env_path, producer_list, customer_list,
                  customer_port_list, branch_name, proxy_port, backup_suffix))
 
-ConfigParser("hk_master")
+
+def load_config():
+    ConfigParser("hk_master")
