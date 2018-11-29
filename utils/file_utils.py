@@ -3,6 +3,9 @@
 # author    :   zc.ding@foxmail.com
 
 import re
+import os
+import logging
+logging.basicConfig(level=logging.INFO)
 
 
 def replace(path, old_params, new_params):
@@ -13,20 +16,23 @@ def replace(path, old_params, new_params):
     :param new_params: 新的值
     :return: void
     """
+    logging.info("\tfile path: " + path +"; old_params: " + ", ".join(old_params) + "; new_params: " + ", ".join(new_params))
     if len(old_params) <= 0 or len(new_params) <= 0:
         print("can't find replace params.")
         return
-    read_file = open(path, 'r')
+    read_file = open(path, 'r',  encoding="UTF-8")
     content = ""
     for line in read_file:
         for param in old_params:
             if re.search(param, line):
                 line = re.sub(param, new_params[old_params.index(param)], line)
-                content += line
-            else:
-                content += line
+        content += line
     read_file.close()
-    print(content)
-    write_file = open(path, 'w')
+    write_file = open(path, 'w',  encoding="UTF-8")
     write_file.write(content)
     write_file.close()
+
+
+if __name__ == "__main__":
+    path = os.path.abspath("../config/") + "hk_master-hk-bi-services\config.xml"
+    replace(path, ["stroll_node", "stroll_service"], ["hello", "world"])
