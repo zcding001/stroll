@@ -1,0 +1,236 @@
+<?xml version="1.0" ?><hudson>
+    <disabledAdministrativeMonitors>
+        <string>hudson.diagnosis.ReverseProxySetupMonitor</string>
+    </disabledAdministrativeMonitors>
+    <version>2.98</version>
+    <installState>
+        <isSetupComplete>true</isSetupComplete>
+        <name>RUNNING</name>
+    </installState>
+    <numExecutors>1</numExecutors>
+    <mode>NORMAL</mode>
+    <useSecurity>true</useSecurity>
+    <authorizationStrategy class="com.michelin.cio.hudson.plugins.rolestrategy.RoleBasedAuthorizationStrategy">
+        <roleMap type="projectRoles">
+            <role name="docker" pattern="docker.*">
+                <permissions>
+                    <permission>hudson.model.Item.Cancel</permission>
+                    <permission>hudson.model.Item.Read</permission>
+                    <permission>hudson.model.Item.Build</permission>
+                </permissions>
+                <assignedSIDs>
+                    <sid>yradmin</sid>
+                    <sid>guest</sid>
+                    <sid>develop</sid>
+                </assignedSIDs>
+            </role>
+            <role name="parent" pattern="framework-parent">
+                <permissions>
+                    <permission>hudson.model.Item.Cancel</permission>
+                    <permission>hudson.model.Item.Read</permission>
+                    <permission>hudson.model.Item.Build</permission>
+                </permissions>
+                <assignedSIDs>
+                    <sid>yradmin</sid>
+                    <sid>develop</sid>
+                </assignedSIDs>
+            </role>
+        </roleMap>
+        <roleMap type="globalRoles">
+            <role name="admin" pattern=".*">
+                <permissions>
+                    <permission>hudson.model.View.Delete</permission>
+                    <permission>hudson.model.Computer.Connect</permission>
+                    <permission>hudson.model.Run.Delete</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains</permission>
+                    <permission>hudson.model.Computer.Create</permission>
+                    <permission>hudson.model.View.Configure</permission>
+                    <permission>hudson.model.Computer.Build</permission>
+                    <permission>hudson.model.Item.Configure</permission>
+                    <permission>hudson.model.Hudson.Administer</permission>
+                    <permission>hudson.model.Item.Cancel</permission>
+                    <permission>hudson.model.Item.Read</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View</permission>
+                    <permission>hudson.model.Computer.Delete</permission>
+                    <permission>hudson.model.Item.Build</permission>
+                    <permission>hudson.scm.SCM.Tag</permission>
+                    <permission>hudson.model.Item.Move</permission>
+                    <permission>hudson.model.Item.Discover</permission>
+                    <permission>hudson.model.Hudson.Read</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update</permission>
+                    <permission>hudson.model.Item.Create</permission>
+                    <permission>hudson.model.Item.Workspace</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete</permission>
+                    <permission>hudson.model.Computer.Provision</permission>
+                    <permission>hudson.model.Run.Replay</permission>
+                    <permission>hudson.model.View.Read</permission>
+                    <permission>hudson.model.View.Create</permission>
+                    <permission>hudson.model.Item.Delete</permission>
+                    <permission>hudson.model.Computer.Configure</permission>
+                    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create</permission>
+                    <permission>hudson.model.Computer.Disconnect</permission>
+                    <permission>hudson.model.Run.Update</permission>
+                </permissions>
+                <assignedSIDs>
+                    <sid>yradmin</sid>
+                </assignedSIDs>
+            </role>
+            <role name="develop" pattern=".*">
+                <permissions>
+                    <permission>hudson.model.Hudson.Read</permission>
+                    <permission>hudson.model.Item.Cancel</permission>
+                    <permission>hudson.model.Item.Read</permission>
+                    <permission>hudson.model.Item.Workspace</permission>
+                    <permission>hudson.model.Item.Build</permission>
+                    <permission>hudson.scm.SCM.Tag</permission>
+                    <permission>hudson.model.Item.Move</permission>
+                    <permission>hudson.model.Item.Configure</permission>
+                    <permission>hudson.model.Item.Discover</permission>
+                    <permission>hudson.model.View.Read</permission>
+                </permissions>
+                <assignedSIDs>
+                    <sid>develop</sid>
+                </assignedSIDs>
+            </role>
+            <role name="guest" pattern=".*">
+                <permissions>
+                    <permission>hudson.model.Hudson.Read</permission>
+                    <permission>hudson.model.Item.Read</permission>
+                </permissions>
+                <assignedSIDs>
+                    <sid>guest</sid>
+                </assignedSIDs>
+            </role>
+            <role name="manager" pattern=".*">
+                <permissions>
+                    <permission>hudson.model.Hudson.Read</permission>
+                    <permission>hudson.model.View.Delete</permission>
+                    <permission>hudson.model.Item.Create</permission>
+                    <permission>hudson.model.Run.Delete</permission>
+                    <permission>hudson.model.Item.Workspace</permission>
+                    <permission>hudson.model.View.Configure</permission>
+                    <permission>hudson.model.Run.Replay</permission>
+                    <permission>hudson.model.Item.Configure</permission>
+                    <permission>hudson.model.View.Read</permission>
+                    <permission>hudson.model.View.Create</permission>
+                    <permission>hudson.model.Item.Cancel</permission>
+                    <permission>hudson.model.Item.Delete</permission>
+                    <permission>hudson.model.Item.Read</permission>
+                    <permission>hudson.model.Item.Build</permission>
+                    <permission>hudson.scm.SCM.Tag</permission>
+                    <permission>hudson.model.Item.Move</permission>
+                    <permission>hudson.model.Item.Discover</permission>
+                    <permission>hudson.model.Run.Update</permission>
+                </permissions>
+                <assignedSIDs>
+                    <sid>manager</sid>
+                </assignedSIDs>
+            </role>
+        </roleMap>
+        <roleMap type="slaveRoles"/>
+    </authorizationStrategy>
+    <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+        <disableSignup>true</disableSignup>
+        <enableCaptcha>false</enableCaptcha>
+    </securityRealm>
+    <disableRememberMe>false</disableRememberMe>
+    <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+    <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
+    <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+    <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+    <jdks>
+        <jdk>
+            <name>jdk8</name>
+            <home>/opt/jdk1.8.0_112</home>
+            <properties/>
+        </jdk>
+    </jdks>
+    <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+    <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+    <clouds/>
+    <quietPeriod>5</quietPeriod>
+    <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+    <views>
+        <hudson.model.AllView>
+            <owner class="hudson" reference="../../.."/>
+            <name>all</name>
+            <description>鸿坤金服-HKJF</description>
+            <filterExecutors>false</filterExecutors>
+            <filterQueue>false</filterQueue>
+            <properties class="hudson.model.View$PropertyList"/>
+        </hudson.model.AllView>
+        <listView>
+            <owner class="hudson" reference="../../.."/>
+            <name>源码构建</name>
+            <filterExecutors>false</filterExecutors>
+            <filterQueue>false</filterQueue>
+            <properties class="hudson.model.View$PropertyList"/>
+            <jobNames>
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
+                <string>framework-parent</string>
+            </jobNames>
+            <jobFilters/>
+            <columns>
+                <hudson.views.StatusColumn/>
+                <hudson.views.WeatherColumn/>
+                <hudson.views.JobColumn/>
+                <hudson.views.LastSuccessColumn/>
+                <hudson.views.LastFailureColumn/>
+                <hudson.views.LastDurationColumn/>
+                <hudson.views.BuildButtonColumn/>
+            </columns>
+            <recurse>false</recurse>
+        </listView>
+        <listView>
+            <owner class="hudson" reference="../../.."/>
+            <name>docker</name>
+            <filterExecutors>false</filterExecutors>
+            <filterQueue>false</filterQueue>
+            <properties class="hudson.model.View$PropertyList"/>
+            <jobNames>
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
+                <string>docker-finance-cxj</string>
+                <string>docker_cxj_develop_no_wait</string>
+                <string>docker_cxj_no_wait</string>
+                <string>docker_hkjf_multi_no_wait</string>
+                <string>docker_hkjf_no_wait</string>
+                <string>framework-parent</string>
+            </jobNames>
+            <jobFilters/>
+            <columns>
+                <hudson.views.StatusColumn/>
+                <hudson.views.WeatherColumn/>
+                <hudson.views.JobColumn/>
+                <hudson.views.LastSuccessColumn/>
+                <hudson.views.LastFailureColumn/>
+                <hudson.views.LastDurationColumn/>
+                <hudson.views.BuildButtonColumn/>
+            </columns>
+            <recurse>false</recurse>
+        </listView>
+    <listView><owner class="hudson" reference="../../.."/><name>hk_master</name><filterExecutors>false</filterExecutors><filterQueue>false</filterQueue><properties class="hudson.model.View$PropertyList"/><jobNames><comparator class="hudson.util.CaseInsensitiveComparator"/><string>user</string><string>loan</string><string>payment</string><string>invest</string><string>secondary</string><string>management</string><string>financial</string><string>api</string><string>bi</string></jobNames><jobFilters/><columns><hudson.views.StatusColumn/><hudson.views.WeatherColumn/><hudson.views.JobColumn/><hudson.views.LastSuccessColumn/><hudson.views.LastFailureColumn/><hudson.views.LastDurationColumn/><hudson.views.BuildButtonColumn/></columns><recurse>false</recurse></listView></views>
+    <primaryView>all</primaryView>
+    <slaveAgentPort>-1</slaveAgentPort>
+    <label/>
+    <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+        <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
+    </crumbIssuer>
+    <nodeProperties/>
+    <globalNodeProperties>
+        <hudson.slaves.EnvironmentVariablesNodeProperty>
+            <envVars serialization="custom">
+                <unserializable-parents/>
+                <tree-map>
+                    <default>
+                        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+                    </default>
+                    <int>1</int>
+                    <string>PATH</string>
+                    <string>
+                        /data/optools/dbbin:/data/mysql4001/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/usr/libexec/git-core:/home/develop/bin
+                    </string>
+                </tree-map>
+            </envVars>
+        </hudson.slaves.EnvironmentVariablesNodeProperty>
+    </globalNodeProperties>
+</hudson>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project>
     <actions/>
-    <description>stroll_master测试</description>
+    <description>stroll_services服务</description>
     <keepDependencies>false</keepDependencies>
     <properties>
         <com.dabsquared.gitlabjenkins.connection.GitLabConnectionProperty plugin="gitlab-plugin@1.5.3">
@@ -19,7 +19,7 @@
         <org.jvnet.hudson.plugins.SSHBuilder plugin="ssh@2.5">
             <siteName>develop@192.168.1.249:22</siteName>
             <command>
-                python3 start.py stroll_master
+                python3 start.py stroll_node stroll_services
             </command>
             <execEachLine>false</execEachLine>
         </org.jvnet.hudson.plugins.SSHBuilder>
