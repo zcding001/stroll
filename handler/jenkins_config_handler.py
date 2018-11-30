@@ -1,16 +1,17 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 # author    :   zc.ding@foxmail.com
+# desc      :   动态添加|删除jenkins的view和job
 
-from xml.dom.minidom import parse
 from handler import config_handler
 from utils import file_utils
-import xml.etree.ElementTree as et
-import xml.dom.minidom as minidom
+import xml.etree.ElementTree as elementTree
+import xml.dom.minidom as mini_dom
 import os
 import shutil
 import logging
-logging.basicConfig(level=logging.INFO)
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
 
 def add_view_and_jobs(sec_name):
@@ -45,16 +46,11 @@ class JenkinsConfigParser:
         :param data: config.ini中节点信息
         """
         self.__ini_config = data
-        self.__base_path = os.path.abspath("../config/")
-        self.__job_path = self.__base_path + "job-template"
+        # self.__base_path = os.path.abspath("../config/")
+        self.__job_template_path = os.path.abspath("../config/job_template")
         # jenkins全局配置文件绝对路径
-        self.__config_abs_path = self.__base_path + "config-new.xml"
-        self.__config_dom = minidom.parse(self.__config_abs_path)
-        self.__dom = minidom.Document()
-        # 添加视图列表
-        # self._add_view_list_element()
-        # 添加job结构
-        # self._create_jobs()
+        self.__config_dom = mini_dom.parse(self.__ini_config.config_xml_path)
+        self.__dom = mini_dom.Document()
 
     def _add_view_list_element(self):
         """
@@ -64,7 +60,7 @@ class JenkinsConfigParser:
         list_view = self.__create_list_view(self.__ini_config.producer_list + self.__ini_config.customer_list)
         views[0].appendChild(list_view)
         # 保存文件
-        file = open(self.__base_path + "/config-new.xml", "w", encoding="UTF-8")
+        file = open(self.__ini_config.config_xml_path, "w", encoding="UTF-8")
         # dom.writexml(file, indent='', addindent='', newl='\n', encoding='UTF-8')
         self.__config_dom.writexml(file)
         file.close()
@@ -74,13 +70,13 @@ class JenkinsConfigParser:
         删除指定sec_name的view视图
         :return: None
         """
-        tree = et.parse(self.__config_abs_path)
+        tree = elementTree.parse(self.__ini_config.config_xml_path)
         views = tree.find("views")
         for node in tree.iter("listView"):
             e = node.find('name')
             if e.text == self.__ini_config.sec_name:
                 views.remove(node)
-        tree.write(self.__config_abs_path, encoding="UTF-8")
+        tree.write(self.__ini_config.config_xml_path, encoding="UTF-8")
 
     def _add_jobs(self):
         """
@@ -88,9 +84,9 @@ class JenkinsConfigParser:
         :return: None
         """
         for obj in (self.__ini_config.producer_list + self.__ini_config.customer_list):
-            job_name = self.__get_job_name(obj)
-            shutil.copytree(self.__job_path, self.__base_path + job_name, symlinks=False, ignore=None)
-            file_utils.replace(self.__base_path + job_name + "/config.xml",
+            job_abs_dst_path = self.__ini_config.job_dst_path + os.path.sep + self.__get_job_name(obj)
+            shutil.copytree(self.__job_template_path, job_abs_dst_path, symlinks=False, ignore=None)
+            file_utils.replace(job_abs_dst_path + os.path.sep + "config.xml",
                                ["stroll_node", "stroll_service"],
                                [self.__ini_config.sec_name, obj])
 
@@ -100,8 +96,9 @@ class JenkinsConfigParser:
         :return: None
         """
         for obj in (self.__ini_config.producer_list + self.__ini_config.customer_list):
-            shutil.rmtree(self.__base_path + self.__get_job_name(obj))
-            logging.info("del job config: " + self.__base_path + self.__get_job_name(obj))
+            job_abs_dst_path = self.__ini_config.job_dst_path + os.path.sep + self.__get_job_name(obj)
+            shutil.rmtree(job_abs_dst_path)
+            logging.debug("del job config: " + job_abs_dst_path)
 
     def __create_list_view(self, job_list):
         """
@@ -181,4 +178,5 @@ class JenkinsConfigParser:
 
 
 if __name__ == "__main__":
-    config_handler.show()
+    add_view_and_jobs("template")
+    # del_view_and_jobs("template")
