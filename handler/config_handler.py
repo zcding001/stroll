@@ -26,6 +26,12 @@ class ConfigHandler:
         mvn_path : mvn soft path
     """
 
+    __default_options = {"producer_prefix": "finance-",
+                         "producer_suffix": "-service",
+                         "customer_prefix": "hk-",
+                         "customer_suffix": "-services",
+                         "version": "-1.0-SNAPSHOT"}
+
     def __init__(self, sec_name):
         config_ini_path = os.path.abspath("../config/config.ini")
         self.__config = configparser.ConfigParser()
@@ -60,15 +66,74 @@ class ConfigHandler:
         self.producer_list = self.__config.get(sec_name, "producer_list").split(",")
         self.customer_list = self.__config.get(sec_name, "customer_list").split(",")
         self.customer_port_list = self.__config.get(sec_name, "customer_port_list").split(",")
-        self.branch_name = self.__config.get(sec_name, "branch_name")
         self.proxy_port = self.__config.get(sec_name, "proxy_port")
-        self.backup_suffix = self.__config.get(sec_name, "backup_suffix")
+        self.branch_name = self.__config.get(sec_name, "branch_name", vars=self.__default_options)
+        if not self.branch_name:
+            self.branch_name = "master"
+        self.backup_suffix = self.__config.get(sec_name, "backup_suffix", vars=self.__default_options)
+        if not self.backup_suffix:
+            self.backup_suffix = "_backup"
+        self.producer_prefix = self.__config.get(sec_name, "producer_prefix", vars=self.__default_options)
+        if not self.producer_prefix:
+            self.backup_suffix = "finance-"
+        self.producer_suffix = self.__config.get(sec_name, "producer_suffix", vars=self.__default_options)
+        if not self.producer_suffix:
+            self.producer_suffix = "-service"
+        self.customer_prefix = self.__config.get(sec_name, "customer_prefix", vars=self.__default_options)
+        if not self.customer_prefix:
+            self.customer_prefix = "hk-"
+        self.customer_suffix = self.__config.get(sec_name, "customer_suffix", vars=self.__default_options)
+        if not self.customer_suffix:
+            self.customer_suffix = "-services"
+        self.version = self.__config.get(sec_name, "version", vars=self.__default_options)
+        if not self.version:
+            self.version = "-1.0-SNAPSHOT"
         logging.debug("*****node config info***************************")
         logging.debug("*src_path=%s, dst_path=%s, env_path=%s, producer_list=%s, customer_list=%s, "
                       "customer_port_list=%s, branch_name=%s, proxy_port=%s, backup_suffix=%s"
                         % (self.src_path, self.dst_path, self.env_path, self.producer_list, self.customer_list,
                          self.customer_port_list, self.branch_name, self.proxy_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
+
+    def get_pom_path(self, service_name):
+        if not service_name:
+            return self.src_path + "/pom.xml"
+        if self.producer_list.count(service_name):
+            return self.src_path + "/finance-" + service_name + "/pom.xml"
+        return self.src_path + "/hk-" + service_name + "-services/pom.xml"
+
+    def get_copy_src_path(self, service_name):
+        if self.producer_list.count(service_name):
+            return self.src_path + "/finance-" + service_name + "/finance-" + service_name + "-service/target/" + service_name + "-1.0-SNAPSHOT.jar"
+        return self.src_path + "/hk-" + service_name + "-services/target/hk-" + service_name + "-services.war"
+
+    def get_copy_dst_path(self, service_name):
+        if self.producer_list.count(service_name):
+            return self.dst_path + "/finance-" + service_name + "-service/" + service_name + ".jar"
+        return self.src_path + "/hk-" + service_name + "-services/webapps/" + service_name + ".war"
+
+    def get_common_resources_path(self):
+        """
+        获取源码项目公共资源路径
+        :return: 资源绝对路径
+        """
+        return self.src_path + os.path.sep + "env"
+
+    def get_service_resources_path(self, service_name):
+        """
+        获取指定服务源码项目的资源路径
+        :param service_name: 服务名称
+        :return: 资源绝对路径
+        """
+        return str(self.src_path + "/fiance-#/finance-#-services/src/main/resources/env").replace("#", service_name)
+
+    def get_web_resources_path(self, service_name):
+        """
+        获取指定web服务源码项目的资源路径
+        :param service_name: 服务名称
+        :return: 资源绝对路径
+        """
+        return str(self.src_path + "/hk-#-services/src/main/resources/env").replace("#", service_name)
 
 
 if __name__ == "__main__":

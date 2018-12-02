@@ -4,7 +4,7 @@
 # desc      :   动态添加|删除jenkins的view和job
 
 from handler import config_handler
-from utils import file_utils
+from utils import file_util
 import xml.etree.ElementTree as elementTree
 import xml.dom.minidom as mini_dom
 import os
@@ -46,7 +46,6 @@ class JenkinsConfigParser:
         :param data: config.ini中节点信息
         """
         self.__ini_config = data
-        # self.__base_path = os.path.abspath("../config/")
         self.__job_template_path = os.path.abspath("../config/job_template")
         # jenkins全局配置文件绝对路径
         self.__config_dom = mini_dom.parse(self.__ini_config.config_xml_path)
@@ -86,9 +85,9 @@ class JenkinsConfigParser:
         for obj in (self.__ini_config.producer_list + self.__ini_config.customer_list):
             job_abs_dst_path = self.__ini_config.job_dst_path + os.path.sep + self.__get_job_name(obj)
             shutil.copytree(self.__job_template_path, job_abs_dst_path, symlinks=False, ignore=None)
-            file_utils.replace(job_abs_dst_path + os.path.sep + "config.xml",
-                               ["stroll_node", "stroll_service"],
-                               [self.__ini_config.sec_name, obj])
+            file_util.replace(job_abs_dst_path + os.path.sep + "config.xml",
+                              ["stroll_node", "stroll_service"],
+                              [self.__ini_config.sec_name, obj])
 
     def _del_jobs(self):
         """

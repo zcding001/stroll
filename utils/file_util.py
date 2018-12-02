@@ -6,6 +6,7 @@
 import re
 import os
 import logging
+import shutil
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
@@ -76,5 +77,72 @@ def list_files(file_path, root_name="", child=True):
     return file_lists
 
 
+def get_parent_path(path):
+    """
+    获取path的父路径
+    :param path: 路径
+    :return: 路径
+    """
+    return os.path.abspath(os.path.join(os.path.abspath(path), os.path.pardir))
+
+
+def make_dirs(file_path):
+    """
+    创建路径
+    :param file_path: 路径
+    :return: None
+    """
+    if not os.path.exists(file_path) or not os.path.isdir(file_path):
+        os.makedirs(file_path)
+
+
+def copy_file(src_file_path, dst_path, only_parent=False):
+    """
+    拷贝文件，如果dst_path不存在，就创建路径
+    :param src_file_path: 源文件路径
+    :param dst_path: 目标地址
+    :param only_parent: 只创建到dst_path路径
+    :return: None
+    """
+    if only_parent:
+        make_dirs(get_parent_path(dst_path))
+    else:
+        make_dirs(dst_path)
+    shutil.copy(src_file_path, dst_path)
+
+
+def copy_path(src_path, dst_path, remove=False):
+    if remove and os.path.exists(dst_path) and os.path.isdir(dst_path):
+        shutil.rmtree(dst_path)
+    shutil.copytree(src_path, dst_path)
+
+
+def del_path(path, *file_name):
+    """
+    删除文件夹或是文件中指定文件
+    :param path: 路径
+    :param file_name: 具体文件名称 
+    :return: None
+    """
+    logging.debug("del path: " + path + ", special file list is: ")
+    logging.debug(file_name)
+    path = os.path.abspath(path)
+    if os.path.exists(path) and os.path.isdir(path):
+        if len(file_name) > 0:
+            for root, dirs, files in os.walk(path):
+                for a in files:
+                    for b in file_name:
+                        if a == b:
+                            os.remove(os.path.abspath(os.path.join(root, a)))
+        else:
+            shutil.rmtree(path)
+
+
 if __name__ == "__main__":
-    replace(os.path.abspath("..output/dst/jobs/hk_master-hk-bi-services/config.xml"), ["stroll_node", "stroll_service"], ["hello", "world"])
+    # replace(os.path.abspath("../output/dst/jobs/hk_master-hk-bi-services/config.xml"), ["stroll_node", "stroll_service"], ["hello", "world"])
+    # del_path(os.path.abspath("../output/projects/hk-api-services/src/main/resources/env"))
+    # copy_path(os.path.abspath("../output/dst/jobs"), os.path.abspath("../output/projects/jobs"), remove=True)
+    # copy_file(os.path.abspath("../output/env/env_hk/env_bi.properties"), os.path.abspath("../output/dst/env_bi.properties"))
+    tmp = ""
+    if not tmp:
+        print("ok")

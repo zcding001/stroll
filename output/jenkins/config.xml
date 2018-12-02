@@ -1,4 +1,4 @@
-<hudson>
+<?xml version="1.0" ?><hudson>
     <disabledAdministrativeMonitors>
         <string>hudson.diagnosis.ReverseProxySetupMonitor</string>
     </disabledAdministrativeMonitors>
@@ -127,68 +127,68 @@
                 </assignedSIDs>
             </role>
         </roleMap>
-        <roleMap type="slaveRoles" />
+        <roleMap type="slaveRoles"/>
     </authorizationStrategy>
     <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
         <disableSignup>true</disableSignup>
         <enableCaptcha>false</enableCaptcha>
     </securityRealm>
     <disableRememberMe>false</disableRememberMe>
-    <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy" />
+    <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
     <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
     <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
-    <markupFormatter class="hudson.markup.EscapedMarkupFormatter" />
+    <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
     <jdks>
         <jdk>
             <name>jdk8</name>
             <home>/opt/jdk1.8.0_112</home>
-            <properties />
+            <properties/>
         </jdk>
     </jdks>
-    <viewsTabBar class="hudson.views.DefaultViewsTabBar" />
-    <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar" />
-    <clouds />
+    <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+    <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+    <clouds/>
     <quietPeriod>5</quietPeriod>
     <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
     <views>
         <hudson.model.AllView>
-            <owner class="hudson" reference="../../.." />
+            <owner class="hudson" reference="../../.."/>
             <name>all</name>
             <description>鸿坤金服-HKJF</description>
             <filterExecutors>false</filterExecutors>
             <filterQueue>false</filterQueue>
-            <properties class="hudson.model.View$PropertyList" />
+            <properties class="hudson.model.View$PropertyList"/>
         </hudson.model.AllView>
         <listView>
-            <owner class="hudson" reference="../../.." />
+            <owner class="hudson" reference="../../.."/>
             <name>源码构建</name>
             <filterExecutors>false</filterExecutors>
             <filterQueue>false</filterQueue>
-            <properties class="hudson.model.View$PropertyList" />
+            <properties class="hudson.model.View$PropertyList"/>
             <jobNames>
-                <comparator class="hudson.util.CaseInsensitiveComparator" />
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
                 <string>framework-parent</string>
             </jobNames>
-            <jobFilters />
+            <jobFilters/>
             <columns>
-                <hudson.views.StatusColumn />
-                <hudson.views.WeatherColumn />
-                <hudson.views.JobColumn />
-                <hudson.views.LastSuccessColumn />
-                <hudson.views.LastFailureColumn />
-                <hudson.views.LastDurationColumn />
-                <hudson.views.BuildButtonColumn />
+                <hudson.views.StatusColumn/>
+                <hudson.views.WeatherColumn/>
+                <hudson.views.JobColumn/>
+                <hudson.views.LastSuccessColumn/>
+                <hudson.views.LastFailureColumn/>
+                <hudson.views.LastDurationColumn/>
+                <hudson.views.BuildButtonColumn/>
             </columns>
             <recurse>false</recurse>
         </listView>
         <listView>
-            <owner class="hudson" reference="../../.." />
+            <owner class="hudson" reference="../../.."/>
             <name>docker</name>
             <filterExecutors>false</filterExecutors>
             <filterQueue>false</filterQueue>
-            <properties class="hudson.model.View$PropertyList" />
+            <properties class="hudson.model.View$PropertyList"/>
             <jobNames>
-                <comparator class="hudson.util.CaseInsensitiveComparator" />
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
                 <string>docker-finance-cxj</string>
                 <string>docker_cxj_develop_no_wait</string>
                 <string>docker_cxj_no_wait</string>
@@ -196,33 +196,33 @@
                 <string>docker_hkjf_no_wait</string>
                 <string>framework-parent</string>
             </jobNames>
-            <jobFilters />
+            <jobFilters/>
             <columns>
-                <hudson.views.StatusColumn />
-                <hudson.views.WeatherColumn />
-                <hudson.views.JobColumn />
-                <hudson.views.LastSuccessColumn />
-                <hudson.views.LastFailureColumn />
-                <hudson.views.LastDurationColumn />
-                <hudson.views.BuildButtonColumn />
+                <hudson.views.StatusColumn/>
+                <hudson.views.WeatherColumn/>
+                <hudson.views.JobColumn/>
+                <hudson.views.LastSuccessColumn/>
+                <hudson.views.LastFailureColumn/>
+                <hudson.views.LastDurationColumn/>
+                <hudson.views.BuildButtonColumn/>
             </columns>
             <recurse>false</recurse>
         </listView>
-    </views>
+    <listView><owner class="hudson" reference="../../.."/><name>template</name><filterExecutors>false</filterExecutors><filterQueue>false</filterQueue><properties class="hudson.model.View$PropertyList"/><jobNames><comparator class="hudson.util.CaseInsensitiveComparator"/><string>user</string><string>loan</string><string>payment</string><string>invest</string><string>secondary</string><string>management</string><string>financial</string><string>api</string><string>bi</string></jobNames><jobFilters/><columns><hudson.views.StatusColumn/><hudson.views.WeatherColumn/><hudson.views.JobColumn/><hudson.views.LastSuccessColumn/><hudson.views.LastFailureColumn/><hudson.views.LastDurationColumn/><hudson.views.BuildButtonColumn/></columns><recurse>false</recurse></listView></views>
     <primaryView>all</primaryView>
     <slaveAgentPort>-1</slaveAgentPort>
-    <label />
+    <label/>
     <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
         <excludeClientIPFromCrumb>false</excludeClientIPFromCrumb>
     </crumbIssuer>
-    <nodeProperties />
+    <nodeProperties/>
     <globalNodeProperties>
         <hudson.slaves.EnvironmentVariablesNodeProperty>
             <envVars serialization="custom">
-                <unserializable-parents />
+                <unserializable-parents/>
                 <tree-map>
                     <default>
-                        <comparator class="hudson.util.CaseInsensitiveComparator" />
+                        <comparator class="hudson.util.CaseInsensitiveComparator"/>
                     </default>
                     <int>1</int>
                     <string>PATH</string>
