@@ -18,7 +18,10 @@ def build_project(sec_name, service_name=""):
     :param service_name: customer_list或是producer_list中值，可以为空
     :return: None
     """
-    BuildHandler(config_handler.ConfigHandler(sec_name))._build_project(service_name)
+    build_handler = BuildHandler(config_handler.ConfigHandler(sec_name))
+    build_handler._copy_properties()
+    build_handler._git_pull()
+    build_handler._build_project(service_name)
 
 
 class BuildHandler:
@@ -30,7 +33,16 @@ class BuildHandler:
         self.__env_path = os.path.abspath(self.__ini_config.env_path)
         self.__common_env_path = self.__ini_config.src_path + os.path.sep + "env"
         self.__service_path = self.__ini_config.src_path + "/fiance-#/finance-#-services/src/main/resources/env"
-        self.__mvn_cmd = self.__ini_config.mvn_path + " clean install -f # -Dmaven.test.skip=true -Penv-test"
+        self.__mvn_cmd = self.__ini_config.mvn_path + " clean package -f # resources:resources -Dmaven.test.skip=true -Penv-test"
+
+    def _git_pull(self):
+        """
+        拉取最新代码
+        :return: None
+        """
+        cmd = "cd " + self.__ini_config.src_path + " && git checkout. && git checkout " + self.__ini_config.branch_name + " && git pull the latest code"
+        if cmd_util.exec_cmd(cmd) != 0:
+            raise Exception("command " + cmd + " execute fail. can't pull ")
 
     def _copy_properties(self):
         """
