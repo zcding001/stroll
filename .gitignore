@@ -1,22 +1,5 @@
 # common
 
-#java class
-*.class
-
-# maven ignore
-target/
-*.jar
-*.war
-*.zip
-*.tar
-*.tar.gz
-
-# eclipse ignore
-.settings/
-.project
-.classpath
-.tern-project
-
 # idea ignore
 .idea/
 *.ipr
@@ -43,6 +26,9 @@ startModule/
 # properties
 *.env_dev.properties
 
+#python cache
+venv
+*/venv
 */__pycache__
-*venv
+*/__pycache__/
 
