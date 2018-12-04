@@ -11,6 +11,16 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
 
+def build_project(sec_name, service_name=""):
+    """
+    构建jar、war并将war、jar拷贝到config.ini中指定的配置路径下
+    :param sec_name: config.ini中节点名称
+    :param service_name: customer_list或是producer_list中值，可以为空
+    :return: None
+    """
+    BuildHandler(config_handler.ConfigHandler(sec_name))._build_project(service_name)
+
+
 class BuildHandler:
     """
     构建war、jar等资源

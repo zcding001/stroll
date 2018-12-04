@@ -33,7 +33,7 @@ class ConfigHandler:
                          "version": "-1.0-SNAPSHOT"}
 
     def __init__(self, sec_name):
-        config_ini_path = os.path.abspath("../config/config.ini")
+        config_ini_path = os.path.abspath("./config/config.ini")
         self.__config = configparser.ConfigParser()
         self.__config.read(config_ini_path)
         # 节点不在直接抛出异常
@@ -134,7 +134,3 @@ class ConfigHandler:
         :return: 资源绝对路径
         """
         return str(self.src_path + "/hk-#-services/src/main/resources/env").replace("#", service_name)
-
-
-if __name__ == "__main__":
-    get_node_info("template")

@@ -46,7 +46,7 @@ class JenkinsConfigParser:
         :param data: config.ini中节点信息
         """
         self.__ini_config = data
-        self.__job_template_path = os.path.abspath("../config/job_template")
+        self.__job_template_path = os.path.abspath("./config/job_template")
         # jenkins全局配置文件绝对路径
         self.__config_dom = mini_dom.parse(self.__ini_config.config_xml_path)
         self.__dom = mini_dom.Document()
