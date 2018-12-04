@@ -30,7 +30,8 @@ class ConfigHandler:
                          "producer_suffix": "-service",
                          "customer_prefix": "hk-",
                          "customer_suffix": "-services",
-                         "version": "-1.0-SNAPSHOT"}
+                         "version": "-1.0-SNAPSHOT",
+                         "proxy_ssh_port": "22"}
 
     def __init__(self, sec_name):
         config_ini_path = os.path.abspath("./config/config.ini")
@@ -67,6 +68,7 @@ class ConfigHandler:
         self.customer_list = self.__config.get(sec_name, "customer_list").split(",")
         self.customer_port_list = self.__config.get(sec_name, "customer_port_list").split(",")
         self.proxy_port = self.__config.get(sec_name, "proxy_port")
+        self.proxy_ssh_port = self.__config.get(sec_name, "proxy_ssh_port", vars=self.__default_options)
         self.branch_name = self.__config.get(sec_name, "branch_name", vars=self.__default_options)
         if not self.branch_name:
             self.branch_name = "master"
@@ -95,7 +97,22 @@ class ConfigHandler:
                          self.customer_port_list, self.branch_name, self.proxy_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
 
+    def get_module_name(self, service_name):
+        """
+        获取服务模块名称
+        :param service_name: 服务简称
+        :return: 服务名称
+        """
+        if self.producer_list.count(service_name):
+            return "finance-" + service_name
+        return "hk-" + service_name + "-services"
+
     def get_pom_path(self, service_name):
+        """
+        获取服务对应的pom文件
+        :param service_name: 服务简称
+        :return: pom.xml绝对路径
+        """
         if not service_name:
             return self.src_path + "/pom.xml"
         if self.producer_list.count(service_name):
@@ -103,11 +120,21 @@ class ConfigHandler:
         return self.src_path + "/hk-" + service_name + "-services/pom.xml"
 
     def get_copy_src_path(self, service_name):
+        """
+        获取指定服务jar、war绝对路径
+        :param service_name: 服务简称
+        :return: jar、war路径
+        """
         if self.producer_list.count(service_name):
             return self.src_path + "/finance-" + service_name + "/finance-" + service_name + "-service/target/" + service_name + "-1.0-SNAPSHOT.jar"
         return self.src_path + "/hk-" + service_name + "-services/target/hk-" + service_name + "-services.war"
 
     def get_copy_dst_path(self, service_name):
+        """
+        获取指定服务目标路径
+        :param service_name: 服务简称 
+        :return: 路径
+        """
         if self.producer_list.count(service_name):
             return self.dst_path + "/finance-" + service_name + "-service/" + service_name + ".jar"
         return self.src_path + "/hk-" + service_name + "-services/webapps/" + service_name + ".war"

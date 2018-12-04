@@ -86,8 +86,8 @@ class JenkinsConfigParser:
             job_abs_dst_path = self.__ini_config.job_dst_path + os.path.sep + self.__get_job_name(obj)
             shutil.copytree(self.__job_template_path, job_abs_dst_path, symlinks=False, ignore=None)
             file_util.replace(job_abs_dst_path + os.path.sep + "config.xml",
-                              ["stroll_node", "stroll_service"],
-                              [self.__ini_config.sec_name, obj])
+                              ["stroll_node", "stroll_service", "stroll_port"],
+                              [self.__ini_config.sec_name, obj, self.__ini_config.proxy_ssh_port])
 
     def _del_jobs(self):
         """
@@ -102,7 +102,7 @@ class JenkinsConfigParser:
     def __create_list_view(self, job_list):
         """
         封装list_view信息
-        :param job_list: list_veiw下的job列表 
+        :param job_list: list_view下的job列表 
         :return: list_view的xml节点信息
         """
         list_view = self.__dom.createElement("listView")
@@ -117,7 +117,7 @@ class JenkinsConfigParser:
         job_names.appendChild(self.__create_element_attrs("comparator", ["class"],
                                                           ["hudson.util.CaseInsensitiveComparator"]))
         for job_name in job_list:
-            job_names.appendChild(self.__create_element("string", job_name))
+            job_names.appendChild(self.__create_element("string", self.__ini_config.sec_name + "-" + self.__ini_config.get_module_name(job_name)))
         list_view.appendChild(job_names)
 
         # 创建jobFilters
@@ -177,5 +177,6 @@ class JenkinsConfigParser:
 
 
 if __name__ == "__main__":
-    add_view_and_jobs("template")
+    print("test")
+    # add_view_and_jobs("template")
     # del_view_and_jobs("template")
