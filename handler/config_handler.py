@@ -67,7 +67,7 @@ class ConfigHandler:
         self.producer_list = self.__config.get(sec_name, "producer_list").split(",")
         self.customer_list = self.__config.get(sec_name, "customer_list").split(",")
         self.customer_port_list = self.__config.get(sec_name, "customer_port_list").split(",")
-        self.proxy_port = self.__config.get(sec_name, "proxy_port")
+        self.proxy_tomcat_port = self.__config.get(sec_name, "proxy_tomcat_port")
         self.proxy_ssh_port = self.__config.get(sec_name, "proxy_ssh_port", vars=self.__default_options)
         self.branch_name = self.__config.get(sec_name, "branch_name", vars=self.__default_options)
         if not self.branch_name:
@@ -92,9 +92,9 @@ class ConfigHandler:
             self.version = "-1.0-SNAPSHOT"
         logging.debug("*****node config info***************************")
         logging.debug("*src_path=%s, dst_path=%s, env_path=%s, producer_list=%s, customer_list=%s, "
-                      "customer_port_list=%s, branch_name=%s, proxy_port=%s, backup_suffix=%s"
+                      "customer_port_list=%s, branch_name=%s, proxy_tomcat_port=%s, backup_suffix=%s"
                         % (self.src_path, self.dst_path, self.env_path, self.producer_list, self.customer_list,
-                         self.customer_port_list, self.branch_name, self.proxy_port, self.backup_suffix))
+                         self.customer_port_list, self.branch_name, self.proxy_tomcat_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
 
     def get_module_name(self, service_name):
