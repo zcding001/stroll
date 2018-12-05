@@ -9,11 +9,18 @@
 FROM phusion/baseimage:0.10.1
 
 
+COPY sshd_config /etc/ssh/sshd_config
+
 #enable sshd
-#RUN rm -rf /etc/service/sshd/down 
+RUN rm -rf /etc/service/sshd/down 
 #RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
+RUN /bin/echo 'root:Docker@123'|chpasswd
+
 
 COPY Shanghai /etc/localtime
+
+#install nginx
+RUN apt-get update && apt-get install -y nginx
 # Clean up APT when done.
 RUN echo 'Asia/Shanghai' >/etc/timezone && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
