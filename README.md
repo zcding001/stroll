@@ -28,7 +28,7 @@ There is plenty of time for a stroll
 
 
 # 核心架构
-![baidu](https://graph.baidu.com/resource/1388f00caeddcbed9089601543978569.jpg)
+![baidu](https://graph.baidu.com/resource/18b656ffd5e79d867884001543991825.jpg)
 
 ### 新分支部署流程
 1. 通过jenkins任务执行视图、任务的构建、容器创建
