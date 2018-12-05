@@ -22,7 +22,7 @@ def get_node_info(sec_name):
 class ConfigHandler:
     """loading config.ini info
     Attributes :
-        config_path : config.ini根路径
+        dst_path : 资源目标路径
         mvn_path : mvn soft path
     """
 
@@ -41,11 +41,11 @@ class ConfigHandler:
         if sec_name not in self.__config.sections():
             raise Exception("node %s no exit" % sec_name)
         # 加载全局配置
-        self.config_path = self.__config.get("global", "config_path")
+        self.dst_path = os.path.abspath(self.__config.get("global", "dst_path"))
         self.mvn_path = self.__config.get("global", "mvn_path")
         self.ln_log_dst_path = self.__config.get("global", "ln_log_dst_path")
         logging.debug("*****global config info*************************")
-        logging.debug("*config_path=%s, mvn_path=%s, ln_log_dst_path=%s" % (self.config_path, self.mvn_path, self.ln_log_dst_path))
+        logging.debug("*dst_path=%s, mvn_path=%s, ln_log_dst_path=%s" % (self.dst_path, self.mvn_path, self.ln_log_dst_path))
         logging.debug("*****global config info*************************")
         # 加载jenkins配置
         self.config_xml_path = os.path.abspath(self.__config.get("jenkins", "config_xml_path"))
@@ -62,7 +62,6 @@ class ConfigHandler:
         """
         self.sec_name = sec_name
         self.src_path = os.path.abspath(self.__config.get(sec_name, "src_path"))
-        self.dst_path = os.path.abspath(self.__config.get(sec_name, "dst_path"))
         self.env_path = os.path.abspath(self.__config.get(sec_name, "env_path"))
         self.producer_list = self.__config.get(sec_name, "producer_list").split(",")
         self.customer_list = self.__config.get(sec_name, "customer_list").split(",")
@@ -91,9 +90,9 @@ class ConfigHandler:
         if not self.version:
             self.version = "-1.0-SNAPSHOT"
         logging.debug("*****node config info***************************")
-        logging.debug("*src_path=%s, dst_path=%s, env_path=%s, producer_list=%s, customer_list=%s, "
+        logging.debug("*src_path=%s, env_path=%s, producer_list=%s, customer_list=%s, "
                       "customer_port_list=%s, branch_name=%s, proxy_tomcat_port=%s, backup_suffix=%s"
-                        % (self.src_path, self.dst_path, self.env_path, self.producer_list, self.customer_list,
+                        % (self.src_path, self.env_path, self.producer_list, self.customer_list,
                          self.customer_port_list, self.branch_name, self.proxy_tomcat_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
 
