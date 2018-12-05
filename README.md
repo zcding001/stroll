@@ -1,6 +1,3 @@
-# stroll
-There is plenty of time for a stroll
-
 # 分布式服务部署架构
 分布式服务部署架构：实现分布服务系统多分支热部署
 
