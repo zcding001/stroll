@@ -28,26 +28,25 @@ There is plenty of time for a stroll
 
 
 # 核心架构
-
-
-###新分支部署流程
+<img src="https://graph.baidu.com/resource/1388f00caeddcbed9089601543978569.jpg"/>
+### 新分支部署流程
 1. 通过jenkins任务执行视图、任务的构建、容器创建
 2. 拉取分支代码、复制系统环境资源、构建jar、war
 3. 容器内完成jdk、zk、nginx、服务部署
 4. 启动所有服务
 
-###服务热部署
+### 服务热部署
 1. jenkins构建服务
 2. 容器内创建服务或备份服务
 3. 服务或备份服务启动完成后，kill已存在服务或备份服务
 
-###用户调用流程
+### 用户调用流程
 1. 用户请求宿主主机端口
 2. 主机代理至docker中nginx(也可是其他端口代理工具)
 3. nginx将请求分布至web应用
 
-#文档说明
-###配置文档
+# 文档说明
+### 配置文档
 ```
 [global]
 jenkins任务路径#
@@ -95,5 +94,5 @@ customer_suffix=
 version=
 ```
 
-###脚本使用
+### 脚本使用
 - 待完善
