@@ -10,17 +10,20 @@ FROM phusion/baseimage:0.10.1
 
 
 COPY sshd_config /etc/ssh/sshd_config
+COPY Shanghai /etc/localtime
+#COPY get-pip.py /etc/
 
 #enable sshd
-RUN rm -rf /etc/service/sshd/down 
+RUN rm -rf /etc/service/sshd/down
 #RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
 RUN /bin/echo 'root:Docker@123'|chpasswd
 
-
-COPY Shanghai /etc/localtime
-
 #install nginx
 RUN apt-get update && apt-get install -y nginx
+
+#install python3
+#RUN add-apt-repository ppa:jonathonf/python-3.6 && apt-get install python3.6 && python3 /etc/get-pip.py
+
 # Clean up APT when done.
 RUN echo 'Asia/Shanghai' >/etc/timezone && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

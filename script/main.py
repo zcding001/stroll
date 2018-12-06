@@ -3,7 +3,6 @@
 # author    :   zc.ding@foxmail.com
 # desc      :   入口函数
 
-
 import handler.config_handler as config_handler
 import handler.jenkins_config_handler as jenkins_config_handler
 import handler.build_handler as build_handler
@@ -24,4 +23,4 @@ def __test_build_handler():
 
 
 if __name__ == "__main__":
-    __test_build_handler()
+    __test_config_handler()

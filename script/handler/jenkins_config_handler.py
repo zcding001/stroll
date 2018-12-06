@@ -3,8 +3,8 @@
 # author    :   zc.ding@foxmail.com
 # desc      :   动态添加|删除jenkins的view和job
 
-from handler import config_handler
-from utils import file_util
+from script.handler import config_handler
+from script.utils import file_util
 import xml.etree.ElementTree as elementTree
 import xml.dom.minidom as mini_dom
 import os

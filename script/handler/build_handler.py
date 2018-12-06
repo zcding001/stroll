@@ -3,8 +3,8 @@
 # author    :   zc.ding@foxmail.com
 # desc      :   编译jar、war
 
-from handler import config_handler
-from utils import file_util, cmd_util
+from script.handler import config_handler
+from script.utils import cmd_util, file_util
 import os
 import logging
 
