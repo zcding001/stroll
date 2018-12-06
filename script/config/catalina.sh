@@ -108,7 +108,7 @@
 # OS specific support.  $var _must_ be set to either true or false.
 JAVA_HOME=/data/www/jkd
 
-CATALINA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=stroll_port,suspend=n,server=y"
+CATALINA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=stroll_debug_port,suspend=n,server=y"
 [[ ${CATALINA_OPTS} =~ "stroll_port" ]] && CATALINA_OPTS=""
 
 java_agent_path=/data/www/stroll_sec_name/stroll_customer_name/agent/skywalking-agent.jar
