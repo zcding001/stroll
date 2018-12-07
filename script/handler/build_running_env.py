@@ -69,11 +69,11 @@ class BuildRunningEnv:
         stroll_debug_port = "stroll_debug_port"
         # 判断是否开启apm的监控agent探针
         self.__copy_agent_env(name, path)
-        if self.__init_config.agent == 1:
+        if self.__init_config.agent == "1":
             stroll_sec_name = self.__init_config.sec_name
             stroll_customer_name = self.__init_config.get_module_name(name)
         # 判断是否开启debug端口
-        if self.__init_config.debug == 1:
+        if self.__init_config.debug == "1":
             stroll_debug_port = port_list[3]
         # 替换代理路径、debug端口
         file_util.replace(path + "/bin/catalina.sh",
@@ -95,7 +95,7 @@ class BuildRunningEnv:
         port2 = cmd_util.get_usable_port(int(self.__init_config.customer_port_start) + interval)
         port3 = cmd_util.get_usable_port(self.__port3 + interval)
         debug_port = cmd_util.get_usable_port(self.__init_config.customer_debug_port_start + interval)
-        return [port1, port2, port3, debug_port, interval]
+        return [str(port1), str(port2), str(port3), str(debug_port)]
 
     def build_service_env(self):
         """
@@ -126,9 +126,9 @@ class BuildRunningEnv:
         :return: None
         """
         # 判断是否开启apm的监控agent探针
-        if self.__init_config.agent == 1:
-            file_util.copy_path(self.__src_agent_path, path + "/")
+        if self.__init_config.agent == "1":
+            file_util.copy_path(self.__src_agent_path, path + "/agent")
             # 替换探针内配置信息
-            file_util.replace(path + "/agent/config/agent.properties",
+            file_util.replace(path + "/agent/config/agent.config",
                               ["Your_ApplicationName", "stroll_agent_ip"],
                               [name, self.__init_config.agent_ip])

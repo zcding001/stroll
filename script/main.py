@@ -3,7 +3,7 @@
 # author    :   zc.ding@foxmail.com
 # desc      :   入口函数
 
-import handler.config_handler as config_handler
+from handler import config_handler as config_handler
 import handler.jenkins_config_handler as jenkins_config_handler
 import handler.build_handler as build_handler
 

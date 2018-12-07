@@ -26,7 +26,7 @@ def get_result_exec_cmd(cmd):
     :param cmd: 系统命令
     :return: 命令执行结果
     """
-    logging.debug("execute command is " + cmd)
+    logging.debug("execute command is [%s]" + cmd)
     result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     logging.debug(result.returncode)
     return result.stdout.decode('utf8')
@@ -39,7 +39,8 @@ def get_usable_port(port=1000):
     :return: 未占用的端口
     """
     cmd = "netstat -nupl | grep " + str(port)
-    while not get_result_exec_cmd(cmd):
+    while get_result_exec_cmd(cmd):
+        logging.debug("the port is already in use [%s]", str(port))
         port = port + 10
         cmd = "netstat -nupl | grep " + port
     return int(port)

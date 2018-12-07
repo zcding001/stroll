@@ -26,7 +26,8 @@ class ConfigHandler:
         mvn_path : mvn soft path
     """
 
-    __default_options = {"producer_protocol_port_start": 6000,
+    __default_options = {"branch_name": "master",
+                         "producer_protocol_port_start": 6000,
                          "producer_debug_port_start": 5000,
                          "customer_port_start": 8000,
                          "customer_debug_port_start": 7000,
@@ -38,7 +39,8 @@ class ConfigHandler:
                          "proxy_ssh_port": "22",
                          "debug": 1,
                          "agent": 0,
-                         "agent_ip": "192.168.1.249:11800"}
+                         "agent_ip": "192.168.1.249:11800",
+                         "backup_suffix": "_backup"}
 
     def __init__(self, sec_name):
         config_ini_path = os.path.abspath("./config/config.ini")
@@ -68,44 +70,37 @@ class ConfigHandler:
         :param sec_name: 节点名称
         """
         self.sec_name = sec_name
-        self.src_path = os.path.abspath(self.__config.get(sec_name, "src_path"))
-        self.env_path = os.path.abspath(self.__config.get(sec_name, "env_path"))
-        self.producer_list = self.__config.get(sec_name, "producer_list").split(",")
-        self.producer_protocol_port_start = int(self.__config.get(sec_name, "producer_protocol_port_start", vars=self.__default_options))
-        self.producer_debug_port_start = int(self.__config.get(sec_name, "producer_debug_port_start", vars=self.__default_options))
-        self.customer_list = self.__config.get(sec_name, "customer_list").split(",")
-        self.customer_port_start = int(self.__config.get(sec_name, "customer_port_start", vars=self.__default_options))
-        self.customer_debug_port_start = int(self.__config.get(sec_name, "customer_debug_port_start", vars=self.__default_options))
-        self.proxy_tomcat_port = self.__config.get(sec_name, "proxy_tomcat_port")
-        self.proxy_zk_port = self.__config.get(sec_name, "proxy_zk_port")
-        self.proxy_ssh_port = self.__config.get(sec_name, "proxy_ssh_port", vars=self.__default_options)
-        self.debug = self.__config.get(sec_name, "debug", vars=self.__default_options)
-        self.agent = self.__config.get(sec_name, "agent", vars=self.__default_options)
-        self.agent_ip = self.__config.get(sec_name, "agent_ip", vars=self.__default_options)
-        self.branch_name = self.__config.get(sec_name, "branch_name", vars=self.__default_options)
-        if not self.branch_name:
-            self.branch_name = "master"
-        self.backup_suffix = self.__config.get(sec_name, "backup_suffix", vars=self.__default_options)
-        if not self.backup_suffix:
-            self.backup_suffix = "_backup"
-        self.producer_prefix = self.__config.get(sec_name, "producer_prefix", vars=self.__default_options)
-        if not self.producer_prefix:
-            self.backup_suffix = "finance-"
-        self.producer_suffix = self.__config.get(sec_name, "producer_suffix", vars=self.__default_options)
-        if not self.producer_suffix:
-            self.producer_suffix = "-service"
-        self.customer_prefix = self.__config.get(sec_name, "customer_prefix", vars=self.__default_options)
-        if not self.customer_prefix:
-            self.customer_prefix = "hk-"
-        self.customer_suffix = self.__config.get(sec_name, "customer_suffix", vars=self.__default_options)
-        if not self.customer_suffix:
-            self.customer_suffix = "-services"
-        self.version = self.__config.get(sec_name, "version", vars=self.__default_options)
-        if not self.version:
-            self.version = "-1.0-SNAPSHOT"
+        self.src_path = os.path.abspath(self.__get_value("src_path"))
+        self.env_path = os.path.abspath(self.__get_value("env_path"))
+        self.producer_list = self.__get_value("producer_list").split(",")
+        self.producer_protocol_port_start = int(self.__get_value("producer_protocol_port_start"))
+        self.producer_debug_port_start = int(self.__get_value("producer_debug_port_start"))
+        self.customer_list = self.__get_value("customer_list").split(",")
+        self.customer_port_start = int(self.__get_value("customer_port_start"))
+        self.customer_debug_port_start = int(self.__get_value("customer_debug_port_start"))
+        self.proxy_tomcat_port = self.__get_value("proxy_tomcat_port")
+        self.proxy_zk_port = self.__get_value("proxy_zk_port")
+        self.proxy_ssh_port = self.__get_value("proxy_ssh_port")
+        self.debug = self.__get_value("debug")
+        self.agent = self.__get_value("agent")
+        self.agent_ip = self.__get_value("agent_ip")
+        self.branch_name = self.__get_value("branch_name")
+        self.backup_suffix = self.__get_value("backup_suffix")
+        self.producer_prefix = self.__get_value("producer_prefix")
+        self.producer_suffix = self.__get_value("producer_suffix")
+        self.customer_prefix = self.__get_value("customer_prefix")
+        self.customer_suffix = self.__get_value("customer_suffix")
+        self.version = self.__get_value("version")
         logging.debug("*****node config info***************************")
+        logging.debug("agent=%s" % self.agent)
         logging.debug("*src_path=%s, env_path=%s, producer_list=%s, customer_list=%s, branch_name=%s, proxy_tomcat_port=%s, backup_suffix=%s" % (self.src_path, self.env_path, self.producer_list, self.customer_list, self.branch_name, self.proxy_tomcat_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
+
+    def __get_value(self, option):
+        if self.__config.has_option(self.sec_name, option) and self.__config.get(self.sec_name, option) != "":
+            return self.__config.get(self.sec_name, option)
+        else:
+            return self.__default_options[option]
 
     def get_module_name(self, service_name):
         """
