@@ -32,7 +32,6 @@ class BuildRunningEnv:
         self.__root_path = os.path.abspath("/data/www/" + self.__init_config.sec_name)
         self.__src_tomcat_path = "/data/www/tomcat"
         self.__src_agent_path = "/data/www/agent"
-        self.__agent_jar_path = "/data/www/agent/config/config.properties"
         self.__src_catalina_path = os.path.abspath("./config/catalina.sh")
         self.__src_server_path = os.path.abspath("./config/server.xml")
         self.__service_template_path = os.path.abspath("./config/service-template")
@@ -77,7 +76,7 @@ class BuildRunningEnv:
         if self.__init_config.debug == 1:
             stroll_debug_port = port_list[3]
         # 替换代理路径、debug端口
-        file_util.replace(path + "/agent/config/config.properties",
+        file_util.replace(path + "/bin/catalina.sh",
                           ["stroll_sec_name", "stroll_customer_name", "stroll_debug_port"],
                           [stroll_sec_name, stroll_customer_name, stroll_debug_port])
 
@@ -91,9 +90,9 @@ class BuildRunningEnv:
         index = self.__init_config.customer_list.index(name)
         interval = index
         if path.endswith(self.__init_config.backup_suffix):
-            interval = index * 100
+            interval = index + 100
         port1 = cmd_util.get_usable_port(self.__port1 + interval)
-        port2 = cmd_util.get_usable_port(int(self.__init_config.customer_port_list) + interval)
+        port2 = cmd_util.get_usable_port(int(self.__init_config.customer_port_start) + interval)
         port3 = cmd_util.get_usable_port(self.__port3 + interval)
         debug_port = cmd_util.get_usable_port(self.__init_config.customer_debug_port_start + interval)
         return [port1, port2, port3, debug_port, interval]
@@ -128,8 +127,8 @@ class BuildRunningEnv:
         """
         # 判断是否开启apm的监控agent探针
         if self.__init_config.agent == 1:
-            file_util.copy_path(self.__agent_path, path + "/")
+            file_util.copy_path(self.__src_agent_path, path + "/")
             # 替换探针内配置信息
-            file_util.replace(path + "/agent/config/config.properties",
-                              ["name", "stroll_agent_ip"],
+            file_util.replace(path + "/agent/config/agent.properties",
+                              ["Your_ApplicationName", "stroll_agent_ip"],
                               [name, self.__init_config.agent_ip])

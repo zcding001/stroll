@@ -26,12 +26,19 @@ class ConfigHandler:
         mvn_path : mvn soft path
     """
 
-    __default_options = {"producer_prefix": "finance-",
+    __default_options = {"producer_protocol_port_start": 6000,
+                         "producer_debug_port_start": 5000,
+                         "customer_port_start": 8000,
+                         "customer_debug_port_start": 7000,
+                         "producer_prefix": "finance-",
                          "producer_suffix": "-service",
                          "customer_prefix": "hk-",
                          "customer_suffix": "-services",
                          "version": "-1.0-SNAPSHOT",
-                         "proxy_ssh_port": "22"}
+                         "proxy_ssh_port": "22",
+                         "debug": 1,
+                         "agent": 0,
+                         "agent_ip": "192.168.1.249:11800"}
 
     def __init__(self, sec_name):
         config_ini_path = os.path.abspath("./config/config.ini")
@@ -64,10 +71,17 @@ class ConfigHandler:
         self.src_path = os.path.abspath(self.__config.get(sec_name, "src_path"))
         self.env_path = os.path.abspath(self.__config.get(sec_name, "env_path"))
         self.producer_list = self.__config.get(sec_name, "producer_list").split(",")
+        self.producer_protocol_port_start = int(self.__config.get(sec_name, "producer_protocol_port_start", vars=self.__default_options))
+        self.producer_debug_port_start = int(self.__config.get(sec_name, "producer_debug_port_start", vars=self.__default_options))
         self.customer_list = self.__config.get(sec_name, "customer_list").split(",")
-        self.customer_port_list = self.__config.get(sec_name, "customer_port_list").split(",")
+        self.customer_port_start = int(self.__config.get(sec_name, "customer_port_start", vars=self.__default_options))
+        self.customer_debug_port_start = int(self.__config.get(sec_name, "customer_debug_port_start", vars=self.__default_options))
         self.proxy_tomcat_port = self.__config.get(sec_name, "proxy_tomcat_port")
+        self.proxy_zk_port = self.__config.get(sec_name, "proxy_zk_port")
         self.proxy_ssh_port = self.__config.get(sec_name, "proxy_ssh_port", vars=self.__default_options)
+        self.debug = self.__config.get(sec_name, "debug", vars=self.__default_options)
+        self.agent = self.__config.get(sec_name, "agent", vars=self.__default_options)
+        self.agent_ip = self.__config.get(sec_name, "agent_ip", vars=self.__default_options)
         self.branch_name = self.__config.get(sec_name, "branch_name", vars=self.__default_options)
         if not self.branch_name:
             self.branch_name = "master"
@@ -90,10 +104,7 @@ class ConfigHandler:
         if not self.version:
             self.version = "-1.0-SNAPSHOT"
         logging.debug("*****node config info***************************")
-        logging.debug("*src_path=%s, env_path=%s, producer_list=%s, customer_list=%s, "
-                      "customer_port_list=%s, branch_name=%s, proxy_tomcat_port=%s, backup_suffix=%s"
-                        % (self.src_path, self.env_path, self.producer_list, self.customer_list,
-                         self.customer_port_list, self.branch_name, self.proxy_tomcat_port, self.backup_suffix))
+        logging.debug("*src_path=%s, env_path=%s, producer_list=%s, customer_list=%s, branch_name=%s, proxy_tomcat_port=%s, backup_suffix=%s" % (self.src_path, self.env_path, self.producer_list, self.customer_list, self.branch_name, self.proxy_tomcat_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
 
     def get_module_name(self, service_name):

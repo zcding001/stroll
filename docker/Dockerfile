@@ -20,6 +20,7 @@ RUN /bin/echo 'root:Docker@123'|chpasswd
 
 #install nginx
 RUN apt-get update && apt-get install -y nginx
+RUN apt-get install -y net-tools
 
 #install python3
 #RUN add-apt-repository ppa:jonathonf/python-3.6 && apt-get install python3.6 && python3 /etc/get-pip.py
@@ -31,7 +32,11 @@ RUN echo 'Asia/Shanghai' >/etc/timezone && apt-get clean && rm -rf /var/lib/apt/
 #ENV JAVA_HOME /share/soft/jdk
 
 #暴露端口
-EXPOSE 5100-5150
+EXPOSE 5000-5010
+EXPOSE 5100-5110
+EXPOSE 7000-7010
+EXPOSE 7100-7110
+
 # Define default command.
 CMD ["/sbin/my_init"]
 
