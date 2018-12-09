@@ -16,12 +16,12 @@ def build_running_env(sec_name):
     :param sec_name: 节点名称
     :return: None
     """
-    bre = BuildRunningEnv(config_handler.get_node_info(sec_name))
+    bre = RunningEnvHandler(config_handler.get_node_info(sec_name))
     bre.build_web_env()
     bre.build_service_env()
 
 
-class BuildRunningEnv:
+class RunningEnvHandler:
     """
     构建项目运行环境
     """
