@@ -11,6 +11,35 @@ import shutil
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
 
+def create_file(file_path, content=""):
+    """
+    创建文件
+    :param file_path: 文件路径
+    :param content: 需要写入的文件内容
+    :return: None
+    """
+    path = os.path.abspath(file_path)
+    if not os.path.exists(path) or os.path.isfile(path):
+        file = open(path, 'w', encoding="UTF-8")
+        file.write(content)
+        file.close()
+
+
+def read_file(file_path):
+    """
+    读取文件内容
+    :param file_path: 文件路径 
+    :return: 文件所有内容
+    """
+    logging.debug("file file_path: " + file_path)
+    file = open(file_path, 'r',  encoding="UTF-8")
+    content = ""
+    for line in file:
+        content += line
+    file.close()
+    return content
+
+
 def replace(file_path, old_params, new_params):
     """
     替换文件中的关键字
@@ -23,14 +52,14 @@ def replace(file_path, old_params, new_params):
     if len(old_params) <= 0 or len(new_params) <= 0:
         print("can't find replace params.")
         return
-    read_file = open(file_path, 'r',  encoding="UTF-8")
+    file = open(file_path, 'r',  encoding="UTF-8")
     content = ""
-    for line in read_file:
+    for line in file:
         for param in old_params:
             if re.search(param, line):
                 line = re.sub(param, new_params[old_params.index(param)], line)
         content += line
-    read_file.close()
+    file.close()
     write_file = open(file_path, 'w',  encoding="UTF-8")
     write_file.write(content)
     write_file.close()
@@ -66,11 +95,11 @@ def list_files(file_path, root_name="", child=True):
 
     # 过滤掉child文件
     if not child:
-        tmp = file_path
+        __tmp = file_path
         if len(prefix_list) > 0:
-            tmp = prefix_list.pop()
+            __tmp = prefix_list.pop()
         for f in file_lists:
-            if f.replace(tmp, "").count(os.path.sep) <= 1:
+            if f.replace(__tmp, "").count(os.path.sep) <= 1:
                 result.append(f)
         file_lists = result
     logging.debug(file_lists)
@@ -143,6 +172,5 @@ if __name__ == "__main__":
     # del_path(os.path.abspath("../output/projects/hk-api-services/src/main/resources/env"))
     # copy_path(os.path.abspath("../output/dst/jobs"), os.path.abspath("../output/projects/jobs"), remove=True)
     # copy_file(os.path.abspath("../output/env/env_hk/env_bi.properties"), os.path.abspath("../output/dst/env_bi.properties"))
-    tmp = ""
-    if not tmp:
-        print("ok")
+    print("test")
+

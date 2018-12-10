@@ -26,7 +26,10 @@ class ConfigHandler:
         mvn_path : mvn soft path
     """
 
-    __default_options = {"branch_name": "master",
+    __default_options = {"producer_try_times": 20,
+                         "customer_try_times": 80,
+                         "proxy_host": "192.168.1.249",
+                         "branch_name": "master",
                          "producer_protocol_port_start": 6000,
                          "producer_debug_port_start": 5000,
                          "customer_port_start": 8000,
@@ -53,6 +56,9 @@ class ConfigHandler:
         self.dst_path = os.path.abspath(self.__config.get("global", "dst_path"))
         self.mvn_path = self.__config.get("global", "mvn_path")
         self.ln_log_dst_path = self.__config.get("global", "ln_log_dst_path")
+        self.container_root_path = self.__config.get("global", "container_root_path")
+        self.producer_try_times = int(self.__get_value("producer_try_times", sec_name="global"))
+        self.customer_try_times = int(self.__get_value("customer_try_times", sec_name="global"))
         logging.debug("*****global config info*************************")
         logging.debug("*dst_path=%s, mvn_path=%s, ln_log_dst_path=%s" % (self.dst_path, self.mvn_path, self.ln_log_dst_path))
         logging.debug("*****global config info*************************")
@@ -79,6 +85,7 @@ class ConfigHandler:
         self.customer_port_start = int(self.__get_value("customer_port_start"))
         self.customer_debug_port_start = int(self.__get_value("customer_debug_port_start"))
         self.proxy_tomcat_port = self.__get_value("proxy_tomcat_port")
+        self.proxy_host = self.__get_value("proxy_host")
         self.proxy_zk_port = self.__get_value("proxy_zk_port")
         self.proxy_ssh_port = self.__get_value("proxy_ssh_port")
         self.debug = self.__get_value("debug")
@@ -96,9 +103,11 @@ class ConfigHandler:
         logging.debug("*src_path=%s, env_path=%s, producer_list=%s, customer_list=%s, branch_name=%s, proxy_tomcat_port=%s, backup_suffix=%s" % (self.src_path, self.env_path, self.producer_list, self.customer_list, self.branch_name, self.proxy_tomcat_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
 
-    def __get_value(self, option):
-        if self.__config.has_option(self.sec_name, option) and self.__config.get(self.sec_name, option) != "":
-            return self.__config.get(self.sec_name, option)
+    def __get_value(self, option, sec_name=""):
+        if sec_name == "":
+            sec_name = self.sec_name
+        if self.__config.has_option(sec_name, option) and self.__config.get(sec_name, option) != "":
+            return self.__config.get(sec_name, option)
         else:
             return self.__default_options[option]
 

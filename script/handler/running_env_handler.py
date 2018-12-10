@@ -3,8 +3,8 @@
 # author    :   zc.ding@foxmail.com
 # desc      :   初始化web、services运行环境
 
-from script.handler import config_handler
-from script.utils import cmd_util, file_util
+from handler import config_handler
+from utils import cmd_util, file_util
 import os
 import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
@@ -28,12 +28,13 @@ class RunningEnvHandler:
 
     def __init__(self, data):
         logging.debug("begin")
-        self.__init_config = data
-        self.__root_path = os.path.abspath("/data/www/" + self.__init_config.sec_name)
-        self.__src_tomcat_path = "/data/www/tomcat"
-        self.__src_agent_path = "/data/www/agent"
-        self.__src_catalina_path = os.path.abspath("./config/catalina.sh")
-        self.__src_server_path = os.path.abspath("./config/server.xml")
+        self.__ini_config = data
+        self.__parent_path = os.path.abspath(self.__ini_config.container_root_path) + os.path.sep
+        self.__root_path = self.__parent_path + self.__ini_config.sec_name + os.path.sep
+        self.__src_tomcat_path = self.__parent_path + "soft/tomcat"
+        self.__src_agent_path = self.__parent_path + "soft/agent"
+        # self.__src_catalina_path = os.path.abspath("./config/catalina.sh")
+        # self.__src_server_path = os.path.abspath("./config/server.xml")
         self.__service_template_path = os.path.abspath("./config/service-template")
         self.__port1 = 8030
         self.__port3 = 8060
@@ -43,11 +44,11 @@ class RunningEnvHandler:
         初始化web项目运行环境
         :return: None
         """
-        customer_list = self.__init_config.customer_list
+        customer_list = self.__ini_config.customer_list
         for o in customer_list:
-            dst_path = self.__root_path + os.path.sep + self.__init_config.get_module_name(o)
+            dst_path = self.__root_path + self.__ini_config.get_module_name(o)
             self.__copy_web_env(o, dst_path)
-            self.__copy_web_env(o, dst_path + self.__init_config.backup_suffix)
+            self.__copy_web_env(o, dst_path + self.__ini_config.backup_suffix)
 
     def __copy_web_env(self, name, path):
         """
@@ -57,23 +58,23 @@ class RunningEnvHandler:
         :return: None
         """
         file_util.copy_path(self.__src_tomcat_path, path)
-        file_util.copy_file(self.__src_server_path, path + "/conf/")
+        # file_util.copy_file(self.__src_server_path, path + "/conf/")
         port_list = self.__get_port_list(name, path)
         # 替换tomcat的server.xml中默认8005, 8080, 8009端口
         file_util.replace(path + "/conf/server.xml",
                           ["stroll_port1", "stroll_port2", "stroll_port3"],
                           [port_list[0], port_list[1], port_list[2]])
-        file_util.copy_file(self.__src_catalina_path, path + "/bin/")
+        # file_util.copy_file(self.__src_catalina_path, path + "/bin/")
         stroll_sec_name = "stroll_sec_name"
         stroll_customer_name = "stroll_customer_name"
         stroll_debug_port = "stroll_debug_port"
         # 判断是否开启apm的监控agent探针
         self.__copy_agent_env(name, path)
-        if self.__init_config.agent == "1":
-            stroll_sec_name = self.__init_config.sec_name
-            stroll_customer_name = self.__init_config.get_module_name(name)
+        if self.__ini_config.agent == "1":
+            stroll_sec_name = self.__ini_config.sec_name
+            stroll_customer_name = self.__ini_config.get_module_name(name)
         # 判断是否开启debug端口
-        if self.__init_config.debug == "1":
+        if self.__ini_config.debug == "1":
             stroll_debug_port = port_list[3]
         # 替换代理路径、debug端口
         file_util.replace(path + "/bin/catalina.sh",
@@ -87,14 +88,13 @@ class RunningEnvHandler:
         :param path: tomcat路径
         :return: 端口集合
         """
-        index = self.__init_config.customer_list.index(name)
-        interval = index
-        if path.endswith(self.__init_config.backup_suffix):
-            interval = index + 100
+        interval = self.__ini_config.customer_list.index(name)
+        if path.endswith(self.__ini_config.backup_suffix):
+            interval += 100
         port1 = cmd_util.get_usable_port(self.__port1 + interval)
-        port2 = cmd_util.get_usable_port(int(self.__init_config.customer_port_start) + interval)
+        port2 = cmd_util.get_usable_port(int(self.__ini_config.customer_port_start) + interval)
         port3 = cmd_util.get_usable_port(self.__port3 + interval)
-        debug_port = cmd_util.get_usable_port(self.__init_config.customer_debug_port_start + interval)
+        debug_port = cmd_util.get_usable_port(self.__ini_config.customer_debug_port_start + interval)
         return [str(port1), str(port2), str(port3), str(debug_port)]
 
     def build_service_env(self):
@@ -102,11 +102,11 @@ class RunningEnvHandler:
         初始化服务提供者运行环境
         :return: None
         """
-        producer_list = self.__init_config.producer_list
+        producer_list = self.__ini_config.producer_list
         for o in producer_list:
-            dst_path = self.__root_path + os.path.sep + self.__init_config.get_module_name(o)
+            dst_path = self.__root_path + self.__ini_config.get_module_name(o)
             self.__copy_service_env(o, dst_path)
-            self.__copy_service_env(o, dst_path + self.__init_config.backup_suffix)
+            self.__copy_service_env(o, dst_path + self.__ini_config.backup_suffix)
 
     def __copy_service_env(self, name, path):
         """
@@ -126,9 +126,9 @@ class RunningEnvHandler:
         :return: None
         """
         # 判断是否开启apm的监控agent探针
-        if self.__init_config.agent == "1":
+        if self.__ini_config.agent == "1":
             file_util.copy_path(self.__src_agent_path, path + "/agent")
             # 替换探针内配置信息
             file_util.replace(path + "/agent/config/agent.config",
                               ["Your_ApplicationName", "stroll_agent_ip"],
-                              [name, self.__init_config.agent_ip])
+                              [name, self.__ini_config.agent_ip])
