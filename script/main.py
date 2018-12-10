@@ -48,7 +48,7 @@ class Main:
         if self.__option == "1":
             # 配置jenkins
             logging.info("config jenkins...")
-            # jenkins_config_handler.add_view_and_jobs(self.__sec_name)
+            jenkins_config_handler.add_view_and_jobs(self.__sec_name)
         elif self.__option == "2":
             # 构建war、jar运行环境
             logging.info("build running env...")

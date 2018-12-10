@@ -156,6 +156,10 @@ def del_path(path, *file_name):
     logging.debug("del path: " + path + ", special file list is: ")
     logging.debug(file_name)
     path = os.path.abspath(path)
+    if path == "/" or path == "/home/develop/.jenkins" or path == "/data/www/projects":
+        logging.info("path /, /data/www/projects, /home/develop/.jenkins is not allowed to be deleted.")
+        return
+
     if os.path.exists(path) and os.path.isdir(path):
         if len(file_name) > 0:
             for root, dirs, files in os.walk(path):
