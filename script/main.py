@@ -45,15 +45,15 @@ class Main:
         logging.info("sec_name is %s" % self.__sec_name)
 
     def switch(self):
-        if self.__option == 1:
+        if self.__option == "1":
             # 配置jenkins
             logging.info("config jenkins...")
             # jenkins_config_handler.add_view_and_jobs(self.__sec_name)
-        elif self.__option == 2:
+        elif self.__option == "2":
             # 构建war、jar运行环境
             logging.info("build running env...")
             # running_env_handler.build_running_env(self.__sec_name)
-        elif self.__option == 3:
+        elif self.__option == "3":
             # 构建war、jar
             if size < 4:
                 show_usage()
@@ -61,7 +61,7 @@ class Main:
             logging.info("build war jar resources")
             logging.info("sec_name is %s" % sys.argv[3])
             # build_handler.build_project(self.__sec_name, sys.argv[3])
-        elif self.__option == 4:
+        elif self.__option == "4":
             # 启停服务
             if size != 5:
                 show_usage()

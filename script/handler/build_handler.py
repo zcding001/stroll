@@ -19,8 +19,8 @@ def build_project(sec_name, service_name=""):
     :return: None
     """
     build_handler = BuildHandler(config_handler.ConfigHandler(sec_name))
-    build_handler._copy_properties()
     build_handler._git_pull()
+    build_handler._copy_properties()
     build_handler._build_project(service_name)
 
 
@@ -40,7 +40,7 @@ class BuildHandler:
         拉取最新代码
         :return: None
         """
-        cmd = "cd " + self.__ini_config.src_path + " && git checkout. && git checkout " + self.__ini_config.branch_name + " && git pull the latest code"
+        cmd = "cd " + self.__ini_config.src_path + " && git checkout . && git checkout " + self.__ini_config.branch_name + " && git pull"
         if cmd_util.exec_cmd(cmd) != 0:
             raise Exception("command " + cmd + " execute fail. can't pull ")
 
@@ -97,13 +97,3 @@ class BuildHandler:
                     src_lib_path = file_util.get_parent_path(src_path) + "/lib"
                     dst_lib_path = file_util.get_parent_path(dst_path) + "/lib"
                     file_util.copy_path(src_lib_path, dst_lib_path, remove=True)
-
-
-if __name__ == "__main__":
-    buildHandler = BuildHandler(config_handler.ConfigHandler("template"))
-    buildHandler._build_project("user")
-
-
-
-
-

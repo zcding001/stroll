@@ -150,7 +150,7 @@ class ConfigHandler:
         :return: 路径
         """
         if self.producer_list.count(service_name):
-            return self.dst_path + "/finance-" + service_name + "-service/" + service_name + ".jar"
+            return self.dst_path + "/" + self.sec_name + "/finance-" + service_name + "/" + service_name + ".jar"
         return self.src_path + "/hk-" + service_name + "-services/webapps/" + service_name + ".war"
 
     def get_common_resources_path(self):
