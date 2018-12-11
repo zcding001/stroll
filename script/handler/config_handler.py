@@ -57,6 +57,7 @@ class ConfigHandler:
         self.mvn_path = self.__config.get("global", "mvn_path")
         self.ln_log_dst_path = self.__config.get("global", "ln_log_dst_path")
         self.container_root_path = self.__config.get("global", "container_root_path")
+        self.local_share_path = self.__config.get("global", "local_share_path")
         self.producer_try_times = int(self.__get_value("producer_try_times", sec_name="global"))
         self.customer_try_times = int(self.__get_value("customer_try_times", sec_name="global"))
         logging.debug("*****global config info*************************")
