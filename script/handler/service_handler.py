@@ -87,9 +87,6 @@ class ServiceHandler:
         """
         # 创建启动节点
         self.__create_node()
-        # 加载系统环境变量
-        cmd = "source /etc/profile"
-        cmd_util.exec_cmd(cmd)
         # 清理历史资源
         cmd = "cd " + self.__new_service_path + " && "
         cmd += " echo '' > " + self.__service_log + " &&"
@@ -98,7 +95,8 @@ class ServiceHandler:
         cmd_util.exec_cmd(cmd)
         # 创建启动脚本
         cmd = "cd " + self.__new_service_path + " && "
-        cmd += "nohup java -jar"
+        cmd += " source /etc/profile &&"
+        cmd += " nohup java -jar"
         # 判断是否开启代理
         if self.__ini_config.agent == "1":
             cmd += " -javaagent:" + self.__new_service_path + "/agent/skywalking-agent.jar"
