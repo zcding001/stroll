@@ -76,9 +76,6 @@ class ServiceHandler:
         self.__jar_name = service_name + "-1.0-SNAPSHOT.jar"
         self.__pid = "service.pid"
         self.__service_log = "service.log"
-        # debug端口
-        self.__producer_debug_port_start = self.__ini_config.producer_debug_port_start
-        self.__producer_protocol_port_start = self.__ini_config.producer_protocol_port_start
 
     def start(self):
         """
@@ -105,10 +102,12 @@ class ServiceHandler:
         if self.__new_service_path.endswith(self.__ini_config.backup_suffix):
             interval += 100
         if self.__ini_config.debug == "1":
-            debug_port = cmd_util.get_usable_port(self.__producer_debug_port_start + interval)
+            # debug端口
+            debug_port = cmd_util.get_usable_port(self.__ini_config.producer_debug_port_start + interval)
             cmd += " -Xdebug -Dsun.zip.disableMemoryMapping=true -Xrunjdwp:transport=dt_socket,"
             cmd += "address=" + str(debug_port) + ",server=y,suspend=n"
-        cmd += " -Ddubbo.protocol.port=" + str(cmd_util.get_usable_port(self.__producer_protocol_port_start + interval))
+        # 自定义dubbo协议端口号
+        cmd += " -Ddubbo.protocol.port=" + str(cmd_util.get_usable_port(self.__ini_config.producer_protocol_port_start + interval))
         cmd += " " + self.__jar_name + " >> " + self.__service_log + " 2>&1 &"
         cmd_util.exec_cmd(cmd)
         # 存储pid
@@ -252,3 +251,44 @@ class ServiceHandler:
             file_util.del_path(self.__nodes_path, os.path.basename(self.__new_node_path))
             # 停止新的服务
             self.stop_web(self.__new_node_path)
+
+    def __reload_nginx(self):
+        nginx_path = os.path.abspath("./config/nginx.conf")
+        file = open(nginx_path, "r", encoding="UTF-8")
+        content = ""
+        for line in file:
+            if line.count("stroll_location") > 0:
+                content += self.__get_location()
+            elif line.count("stroll_upstream") > 0:
+                content += self.__get_upstream()
+            else:
+                content += line + "\n"
+        file.close()
+        dst_file = open("/etc/nginx/nginx.conf", "w+", encoding="UTF-8")
+        dst_file.write(content)
+        dst_file.close()
+        cmd_util.exec_cmd("service nginx reload")
+
+    def __get_location(self):
+        service_name = ""
+        content = "\t\t\t\tlocation /" + service_name + " {\n"
+        content += "\t\t\t\t\tproxy_pass http:/" + service_name + ";\n"
+        content += "\t\t\t\t\tproxy_cookie_path /" + service_name + " /;\n"
+        content += "\t\t\t\t\tproxy_set_header Host $host;\n"
+        content += "\t\t\t\t\tproxy_set_header X-Real-IP $remote_addr;\n"
+        content += "\t\t\t\t\tproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+        content += "\t\t\t\t\tproxy_redirect     off;\n"
+        content += "\t\t\t\t\tproxy_read_timeout  60s;\n"
+        content += "\t\t\t\t\tproxy_connect_timeout   60s;\n"
+        content += "\t\t\t\t\tproxy_send_timeout   60s;\n"
+        content += "\t\t\t\t\tproxy_set_header X-Forwarded-Proto https;\n"
+        content += "\t\t\t\t\tproxy_intercept_errors on;\n"
+        content += "\t\t\t\t\taccess_log /var/log/nginx/access.log main;\n"
+        return content
+
+    def __get_upstream(self):
+        service_name = ""
+        content = "\t\t\t\tupstream " + service_name + " {\n"
+        content += "\t\t\t\t\tserver localhost:8080;\n"
+        content += "\t\t\t\t}\n"
+        return content

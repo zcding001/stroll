@@ -13,12 +13,12 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%
 
 
 if __name__ == "__main__":
-    # content = "\n"
-    # content += "export JAVA_HOME=/opt/jdk \n"
-    # content += "export PATH=$JAVA_HOME/bin:$PATH \n"
-    # content += "export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar\n"
-    # path = os.path.abspath("./output/profile")
-    # file = open(path, "a", encoding="UTF-8")
-    # file.write(content)
-    # file.close()
-    # print(content)
+    content = "\n"
+    content += "export JAVA_HOME=/opt/jdk \n"
+    content += "export PATH=$JAVA_HOME/bin:$PATH \n"
+    content += "export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar\n"
+    path = os.path.abspath("./output/profile")
+    file = open(path, "a", encoding="UTF-8")
+    file.write(content)
+    file.close()
+    print(content)
