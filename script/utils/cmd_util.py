@@ -16,7 +16,7 @@ def exec_cmd(cmd):
     :param cmd: 系统命令
     :return: 命令执行结果
     """
-    logging.debug("execute command is [%s]" % cmd)
+    logging.info("execute command is [%s]" % cmd)
     if 'Window' in platform.system():
         return 0
     result = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -25,7 +25,7 @@ def exec_cmd(cmd):
 
 
 def get_result_exec_cmd(cmd):
-    logging.debug("execute command is [%s]" % cmd)
+    logging.info("execute command is [%s]" % cmd)
     """
     run执行系统命令
     :param cmd: 系统命令
@@ -48,7 +48,7 @@ def get_usable_port(port=1000):
         return port
     cmd = "netstat -ano | grep " + str(port)
     while get_result_exec_cmd(cmd):
-        logging.debug("the port is already in use [%s]" % str(port))
+        logging.warning("the port is already in use [%s]" % str(port))
         port = port + 10
         cmd = "netstat -ano | grep " + port
     return int(port)

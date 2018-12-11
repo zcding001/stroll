@@ -29,7 +29,6 @@ class RunningEnvHandler:
     """
 
     def __init__(self, data):
-        logging.debug("begin")
         self.__ini_config = data
         self.__parent_path = os.path.abspath(self.__ini_config.container_root_path) + os.path.sep
         self.__root_path = self.__parent_path + self.__ini_config.sec_name + os.path.sep
@@ -37,11 +36,7 @@ class RunningEnvHandler:
         self.__src_agent_path = self.__parent_path + "soft/agent"
         self.__jdk_path = self.__parent_path + "soft/jdk"
         self.__zk_path = self.__parent_path + "soft/zookeeper"
-        # self.__src_catalina_path = os.path.abspath("./config/catalina.sh")
-        # self.__src_server_path = os.path.abspath("./config/server.xml")
         self.__service_template_path = os.path.abspath("./config/service-template")
-        self.__port1 = 8030
-        self.__port3 = 8060
 
     def build_web_env(self):
         """
@@ -62,13 +57,11 @@ class RunningEnvHandler:
         :return: None
         """
         file_util.copy_path(self.__src_tomcat_path, path)
-        # file_util.copy_file(self.__src_server_path, path + "/conf/")
-        port_list = self.__get_port_list(name, path)
+        port_list = self.__ini_config.get_tomcat_port_list(name, path)
         # 替换tomcat的server.xml中默认8005, 8080, 8009端口
         file_util.replace(path + "/conf/server.xml",
                           ["stroll_port1", "stroll_port2", "stroll_port3"],
                           [port_list[0], port_list[1], port_list[2]])
-        # file_util.copy_file(self.__src_catalina_path, path + "/bin/")
         stroll_sec_name = "stroll_sec_name"
         stroll_customer_name = "stroll_customer_name"
         stroll_debug_port = "stroll_debug_port"
@@ -84,22 +77,6 @@ class RunningEnvHandler:
         file_util.replace(path + "/bin/catalina.sh",
                           ["stroll_sec_name", "stroll_customer_name", "stroll_debug_port"],
                           [stroll_sec_name, stroll_customer_name, stroll_debug_port])
-
-    def __get_port_list(self, name, path):
-        """
-        获取端口列表集合
-        :param name: 应用名称
-        :param path: tomcat路径
-        :return: 端口集合
-        """
-        interval = self.__ini_config.customer_list.index(name)
-        if path.endswith(self.__ini_config.backup_suffix):
-            interval += 100
-        port1 = cmd_util.get_usable_port(self.__port1 + interval)
-        port2 = cmd_util.get_usable_port(int(self.__ini_config.customer_port_start) + interval)
-        port3 = cmd_util.get_usable_port(self.__port3 + interval)
-        debug_port = cmd_util.get_usable_port(self.__ini_config.customer_debug_port_start + interval)
-        return [str(port1), str(port2), str(port3), str(debug_port)]
 
     def build_service_env(self):
         """

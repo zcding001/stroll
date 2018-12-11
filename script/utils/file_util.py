@@ -45,7 +45,7 @@ def read_file(file_path):
     :param file_path: 文件路径 
     :return: 文件所有内容
     """
-    logging.debug("file file_path: " + file_path)
+    logging.debug("read file file_path: " + file_path)
     file = open(file_path, 'r',  encoding="UTF-8")
     content = ""
     for line in file:
@@ -62,9 +62,9 @@ def replace(file_path, old_params, new_params):
     :param new_params: 新的值
     :return: void
     """
-    logging.debug("file file_path: " + file_path + "; old_params: " + ", ".join(old_params) + "; new_params: " + ", ".join(new_params))
+    logging.info("file file_path: " + file_path + "; old_params: " + ", ".join(old_params) + "; new_params: " + ", ".join(new_params))
     if len(old_params) <= 0 or len(new_params) <= 0:
-        print("can't find replace params.")
+        logging.error("can't find replace params.")
         return
     file = open(file_path, 'r',  encoding="UTF-8")
     content = ""
@@ -147,7 +147,7 @@ def copy_file(src_file_path, dst_path, only_parent=False):
     :param only_parent: 只创建到dst_path路径
     :return: None
     """
-    logging.debug("copy file from [%s] to [%s]", src_file_path, dst_path)
+    logging.info("copy file from [%s] to [%s]", src_file_path, dst_path)
     if only_parent:
         make_dirs(get_parent_path(dst_path))
     else:
@@ -156,7 +156,7 @@ def copy_file(src_file_path, dst_path, only_parent=False):
 
 
 def copy_path(src_path, dst_path, remove=False):
-    logging.debug("copy file from [%s] to [%s]", src_path, dst_path)
+    logging.info("copy file from [%s] to [%s]", src_path, dst_path)
     if remove and os.path.exists(dst_path) and os.path.isdir(dst_path):
         shutil.rmtree(dst_path)
     shutil.copytree(src_path, dst_path)
@@ -169,8 +169,8 @@ def del_path(path, *file_name):
     :param file_name: 具体文件名称 
     :return: None
     """
-    logging.debug("del path: " + path + ", special file list is: ")
-    logging.debug(file_name)
+    logging.warning("del path: " + path + ", special file list is: ")
+    logging.warning(file_name)
     path = os.path.abspath(path)
     if path == "/" or path == "/home/develop/.jenkins" or path == "/data/www/projects":
         logging.info("path /, /data/www/projects, /home/develop/.jenkins is not allowed to be deleted.")
@@ -185,12 +185,3 @@ def del_path(path, *file_name):
                             os.remove(os.path.abspath(os.path.join(root, a)))
         else:
             shutil.rmtree(path)
-
-
-if __name__ == "__main__":
-    # replace(os.path.abspath("../output/dst/jobs/hk_master-hk-bi-services/config.xml"), ["stroll_node", "stroll_service"], ["hello", "world"])
-    # del_path(os.path.abspath("../output/projects/hk-api-services/src/main/resources/env"))
-    # copy_path(os.path.abspath("../output/dst/jobs"), os.path.abspath("../output/projects/jobs"), remove=True)
-    # copy_file(os.path.abspath("../output/env/env_hk/env_bi.properties"), os.path.abspath("../output/dst/env_bi.properties"))
-    print("test")
-

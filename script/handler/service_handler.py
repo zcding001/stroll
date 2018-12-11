@@ -12,6 +12,10 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
 
+def test(sec_name):
+    data = config_handler.get_node_info(sec_name)
+    ServiceHandler(data, "financial").reload_nginx()
+
 def switch(sec_name, service_name, action):
     """
     启停服务提供者、消费者
@@ -98,16 +102,13 @@ class ServiceHandler:
             cmd += " -javaagent:" + self.__new_service_path + "/agent/skywalking-agent.jar"
         # 判断是否开启了debug
         cmd += " -Xms256m -Xmx256m"
-        interval = self.__ini_config.producer_list.index(self.__service_name)
-        if self.__new_service_path.endswith(self.__ini_config.backup_suffix):
-            interval += 100
+        port_list = self.__ini_config.get_service_port_list(self.__service_name, self.__new_service_path)
         if self.__ini_config.debug == "1":
             # debug端口
-            debug_port = cmd_util.get_usable_port(self.__ini_config.producer_debug_port_start + interval)
             cmd += " -Xdebug -Dsun.zip.disableMemoryMapping=true -Xrunjdwp:transport=dt_socket,"
-            cmd += "address=" + str(debug_port) + ",server=y,suspend=n"
+            cmd += "address=" + port_list[2] + ",server=y,suspend=n"
         # 自定义dubbo协议端口号
-        cmd += " -Ddubbo.protocol.port=" + str(cmd_util.get_usable_port(self.__ini_config.producer_protocol_port_start + interval))
+        cmd += " -Ddubbo.protocol.port=" + port_list[1]
         cmd += " " + self.__jar_name + " >> " + self.__service_log + " 2>&1 &"
         cmd_util.exec_cmd(cmd)
         # 存储pid
@@ -128,7 +129,7 @@ class ServiceHandler:
             cmd += " kill -9 `cat " + self.__pid + "`"
             cmd_util.exec_cmd(cmd)
         except Exception:
-            logging.info("stop tomcat fail. Don't care about")
+            logging.error("stop tomcat fail. Don't care about")
 
     def __create_node(self):
         """
@@ -231,7 +232,8 @@ class ServiceHandler:
         while count < self.__ini_config.customer_try_times:
             logging.info("try %s times to get the tomcat running status." % count)
             time.sleep(3)
-            url = "http://" + self.__ini_config.proxy_host + ":" + self.__ini_config.proxy_tomcat_port + "/"
+            port_list = self.__ini_config.get_tomcat_port_list(self.__service_name, self.__new_service_path)
+            url = "http://localhost:" + port_list[1] + "/"
             url += self.__ini_config.get_module_name(self.__service_name) + "/index.html"
             code = http_util.send_request(url)
             if code == 200:
@@ -244,6 +246,8 @@ class ServiceHandler:
         if finish:
             # 删除旧的node文件
             file_util.del_path(self.__nodes_path, os.path.basename(self.__old_node_path))
+            # 重新加载nginx
+            self.reload_nginx()
             # 停止旧的服务
             self.stop_web(self.__old_node_path)
         else:
@@ -252,27 +256,57 @@ class ServiceHandler:
             # 停止新的服务
             self.stop_web(self.__new_node_path)
 
-    def __reload_nginx(self):
+    def reload_nginx(self):
         nginx_path = os.path.abspath("./config/nginx.conf")
         file = open(nginx_path, "r", encoding="UTF-8")
+        tup = self.__get_upstream_and_location()
         content = ""
+        if tup[0] == "" or tup[1] == "":
+            logging.warning("can't find running tomcat")
+            return
         for line in file:
-            if line.count("stroll_location") > 0:
-                content += self.__get_location()
-            elif line.count("stroll_upstream") > 0:
-                content += self.__get_upstream()
+            if line.count("stroll_upstream") > 0:
+                content += tup[0]
+            elif line.count("stroll_location") > 0:
+                content += tup[1]
             else:
-                content += line + "\n"
+                content += line
         file.close()
-        dst_file = open("/etc/nginx/nginx.conf", "w+", encoding="UTF-8")
+        dst_path = os.path.abspath("/etc/nginx/nginx.conf")
+        dst_file = open(dst_path, "w+", encoding="UTF-8")
         dst_file.write(content)
         dst_file.close()
         cmd_util.exec_cmd("service nginx reload")
 
-    def __get_location(self):
-        service_name = ""
+    def __get_upstream_and_location(self):
+        tup_list = []
+        upstream_content = ""
+        location_content = ""
+        # 遍历消费(web列表)
+        for c in self.__ini_config.customer_list:
+            # 运行中或是启动的中node节点
+            for tup in self.__get_running_nodes():
+                # 若果找到最先匹配的节点就停止遍历
+                if os.path.basename(tup[0]).count(c) > 0:
+                    list.append((c, tup[0]))
+                    break
+        for t in tup_list:
+            upstream_content += self.__get_upstream(t)
+            location_content += self.__get_location(t)
+        tup = (upstream_content, location_content)
+        return tup
+
+    def __get_upstream(self, tup):
+        content = "\t\tupstream " + tup[0] + " {\n"
+        port_list = self.__ini_config.get_tomcat_port_list(tup[0], tup[1])
+        content += "\t\t\tserver localhost:" + port_list[1] + ";\n"
+        content += "\t\t}\n"
+        return content
+
+    def __get_location(self, tup):
+        service_name = self.__ini_config.get_module_name(tup[0])
         content = "\t\t\t\tlocation /" + service_name + " {\n"
-        content += "\t\t\t\t\tproxy_pass http:/" + service_name + ";\n"
+        content += "\t\t\t\t\tproxy_pass http://" + tup[0] + ";\n"
         content += "\t\t\t\t\tproxy_cookie_path /" + service_name + " /;\n"
         content += "\t\t\t\t\tproxy_set_header Host $host;\n"
         content += "\t\t\t\t\tproxy_set_header X-Real-IP $remote_addr;\n"
@@ -286,9 +320,17 @@ class ServiceHandler:
         content += "\t\t\t\t\taccess_log /var/log/nginx/access.log main;\n"
         return content
 
-    def __get_upstream(self):
-        service_name = ""
-        content = "\t\t\t\tupstream " + service_name + " {\n"
-        content += "\t\t\t\t\tserver localhost:8080;\n"
-        content += "\t\t\t\t}\n"
-        return content
+    def __get_running_nodes(self):
+        """
+        获得运行中的节点，按节点创建时间升序， 创建时间越大，表示启动越晚，最有可能是正在启动中的节点
+        :return: 含有文件路径和时间的元组组成的集合
+        """
+        result = []
+        file_list = file_util.list_files(self.__nodes_path)
+        for f in file_list:
+            t = os.path.getctime(f)
+            tup = (f, t)
+            result.append(tup)
+        if len(result) > 0:
+            result.sort(key=lambda o: o[1])
+        return result

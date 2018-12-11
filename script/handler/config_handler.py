@@ -177,3 +177,37 @@ class ConfigHandler:
         :return: 资源绝对路径
         """
         return str(self.src_path + "/hk-#-services/src/main/resources/env").replace("#", service_name)
+
+    def get_tomcat_port_list(self, name, path):
+        """
+        获取端口列表集合
+        :param name: 应用名称
+        :param path: tomcat路径
+        :return: 端口集合
+        """
+        # 替换8005
+        port1 = 8030
+        # 替换8009
+        port3 = 8060
+        interval = self.customer_list.index(name)
+        if path.endswith(self.backup_suffix):
+            interval += 100
+        port1 = port1 + interval
+        port2 = int(self.customer_port_start) + interval
+        port3 = port3 + interval
+        debug_port = int(self.customer_debug_port_start) + interval
+        return [str(port1), str(port2), str(port3), str(debug_port)]
+
+    def get_service_port_list(self, name, path):
+        """
+        获取dubbo协议、debug端口列表集合
+        :param name: 应用名称
+        :param path: dubbo服务路径
+        :return: 端口集合
+        """
+        interval = self.customer_list.index(name)
+        if path.endswith(self.backup_suffix):
+            interval += 100
+        port1 = int(self.producer_debug_port_start) + interval
+        port2 = int(self.producer_protocol_port_start) + interval
+        return [str(port1), str(port2)]
