@@ -36,7 +36,7 @@ class RunningEnvHandler:
         self.__src_tomcat_path = self.__parent_path + "soft/tomcat"
         self.__src_agent_path = self.__parent_path + "soft/agent"
         self.__jdk_path = self.__parent_path + "soft/jdk"
-        self.__zk_path = self.__parent_path + "soft/zk"
+        self.__zk_path = self.__parent_path + "soft/zookeeper"
         # self.__src_catalina_path = os.path.abspath("./config/catalina.sh")
         # self.__src_server_path = os.path.abspath("./config/server.xml")
         self.__service_template_path = os.path.abspath("./config/service-template")
