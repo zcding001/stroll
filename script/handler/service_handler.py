@@ -85,6 +85,13 @@ class ServiceHandler:
         启动指定服务
         :return: None
         """
+        # 清理历史资源
+        cmd = "cd " + self.__new_service_path + " && "
+        cmd += " echo '' > " + self.__service_log + " &&"
+        cmd += " echo '' > " + self.__pid + " &&"
+        cmd += " rm -rf logs/*"
+        cmd_util.exec_cmd(cmd)
+        # 创建启动节点
         self.__create_node()
         cmd = "cd " + self.__new_service_path + " && "
         cmd += "nohup java -jar"
