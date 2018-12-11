@@ -87,6 +87,9 @@ class ServiceHandler:
         """
         # 创建启动节点
         self.__create_node()
+        # 加载系统环境变量
+        cmd = "source /etc/profile"
+        cmd_util.exec_cmd(cmd)
         # 清理历史资源
         cmd = "cd " + self.__new_service_path + " && "
         cmd += " echo '' > " + self.__service_log + " &&"
