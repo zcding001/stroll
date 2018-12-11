@@ -94,9 +94,8 @@ class ServiceHandler:
         cmd += " rm -rf logs/*"
         cmd_util.exec_cmd(cmd)
         # 创建启动脚本
-        cmd = "cd " + self.__new_service_path + " && "
-        cmd += " source /etc/profile &&"
-        cmd += " nohup java -jar"
+        cmd = "cd " + self.__new_service_path + " &&"
+        cmd += " nohup /opt/jdk/jre/bin/java -jar"
         # 判断是否开启代理
         if self.__ini_config.agent == "1":
             cmd += " -javaagent:" + self.__new_service_path + "/agent/skywalking-agent.jar"
