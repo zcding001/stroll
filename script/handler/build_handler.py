@@ -33,8 +33,8 @@ class BuildHandler:
         self.__env_path = os.path.abspath(self.__ini_config.env_path)
         self.__common_env_path = self.__ini_config.src_path + os.path.sep + "env"
         self.__service_path = self.__ini_config.src_path + "/fiance-#/finance-#-services/src/main/resources/env"
-        # self.__mvn_cmd = self.__ini_config.mvn_path + " clean package -f # resources:resources -Dmaven.test.skip=true -Penv-test"
-        self.__mvn_cmd = self.__ini_config.mvn_path + " clean package -pl # -am resources:resources -Dmaven.test.skip=true -Penv-test"
+        self.__mvn_cmd = "cd " + self.__ini_config.src_path + " && " + self.__ini_config.mvn_path
+        self.__mvn_cmd += " clean package -pl # -am resources:resources -Dmaven.test.skip=true -Penv-test"
 
     def _git_pull(self):
         """
@@ -82,7 +82,7 @@ class BuildHandler:
         """
         cmd = self.__mvn_cmd.replace("#", self.__ini_config.get_module_name(service_name))
         if cmd_util.exec_cmd(cmd) != 0:
-            raise Exception("command " + cmd + "execute fail.")
+            raise Exception("command " + cmd + " execute fail.")
         # 复制构建后的资源
         for f in self.__ini_config.producer_list + self.__ini_config.customer_list:
             flag = False
