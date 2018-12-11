@@ -149,9 +149,10 @@ class ConfigHandler:
         :param service_name: 服务简称 
         :return: 路径
         """
-        if self.producer_list.count(service_name):
-            return self.dst_path + "/" + self.sec_name + "/finance-" + service_name + "/" + service_name + ".jar"
-        return self.src_path + "/hk-" + service_name + "-services/webapps/" + service_name + ".war"
+        return self.dst_path + "/" + self.sec_name + "-" + self.get_module_name(service_name)
+        # if self.producer_list.count(service_name):
+        #     return self.dst_path + "/" + self.sec_name + "/finance-" + service_name + "/" + service_name + ".jar"
+        # return self.src_path + "/hk-" + service_name + "-services/webapps/" + service_name + ".war"
 
     def get_common_resources_path(self):
         """

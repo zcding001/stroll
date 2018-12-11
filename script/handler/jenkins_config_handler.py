@@ -174,9 +174,3 @@ class JenkinsConfigParser:
         if self.__ini_config.customer_list.count(obj) > 0:
             job_name = self.__ini_config.sec_name + "-hk-" + obj + "-services"
         return job_name
-
-
-if __name__ == "__main__":
-    print("test")
-    # add_view_and_jobs("template")
-    # del_view_and_jobs("template")
