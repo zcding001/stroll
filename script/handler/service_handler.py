@@ -23,9 +23,9 @@ def switch(sec_name, service_name, action):
     data = config_handler.get_node_info(sec_name)
     sh = ServiceHandler(data, service_name)
     if data.customer_list.count(service_name) > 0:
-        __start_service(sh, action)
-    else:
         __start_web(sh, action)
+    else:
+        __start_service(sh, action)
 
 
 def __start_service(sh, action):
