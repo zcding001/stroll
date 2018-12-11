@@ -166,7 +166,7 @@ class ConfigHandler:
         :param service_name: 服务名称
         :return: 资源绝对路径
         """
-        return str(self.src_path + "/finance-#/finance-#-services/src/main/resources/env").replace("#", service_name)
+        return str(self.src_path + "/finance-#/finance-#-service/src/main/resources/env").replace("#", service_name)
 
     def get_web_resources_path(self, service_name):
         """
