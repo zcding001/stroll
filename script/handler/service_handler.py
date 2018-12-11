@@ -71,7 +71,7 @@ class ServiceHandler:
         self.__parent_path = os.path.abspath(
             self.__ini_config.container_root_path) + os.path.sep + self.__ini_config.sec_name + os.path.sep
         file_util.make_dirs(self.__parent_path)
-        self.__jre_home = self.__parent_path + "jdk/jre/bin/java"
+        # self.__jre_home = self.__parent_path + "jdk/jre/bin/java"
         self.__service_name = service_name
         self.__jar_name = service_name + "-1.0-snapshot.jar"
         self.__pid = "service.pid"
@@ -86,7 +86,7 @@ class ServiceHandler:
         """
         self.__create_node()
         cmd = "cd " + self.__new_service_path + " && "
-        cmd += "nohup " + self.__jre_home
+        cmd += "nohup java"
         # 判断是否开启代理
         if self.__ini_config.agent == "1":
             cmd += " -javaagent: " + self.__new_service_path + "/agent/skywalking-agent.jar"

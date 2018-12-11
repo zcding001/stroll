@@ -19,6 +19,8 @@ def build_running_env(sec_name):
     bre = RunningEnvHandler(config_handler.get_node_info(sec_name))
     bre.build_web_env()
     bre.build_service_env()
+    bre.config_jdk()
+    bre.config_zk()
 
 
 class RunningEnvHandler:
@@ -33,6 +35,8 @@ class RunningEnvHandler:
         self.__root_path = self.__parent_path + self.__ini_config.sec_name + os.path.sep
         self.__src_tomcat_path = self.__parent_path + "soft/tomcat"
         self.__src_agent_path = self.__parent_path + "soft/agent"
+        self.__jdk_path = self.__parent_path + "soft/jdk"
+        self.__zk_path = self.__parent_path + "soft/zk"
         # self.__src_catalina_path = os.path.abspath("./config/catalina.sh")
         # self.__src_server_path = os.path.abspath("./config/server.xml")
         self.__service_template_path = os.path.abspath("./config/service-template")
@@ -132,3 +136,26 @@ class RunningEnvHandler:
             file_util.replace(path + "/agent/config/agent.config",
                               ["Your_ApplicationName", "stroll_agent_ip"],
                               [name, self.__ini_config.agent_ip])
+
+    def config_jdk(self):
+        """
+        配置jdk及环境及环境变量
+        :return: None
+        """
+        content = "\n"
+        content += "export JAVA_HOME=/opt/jdk \n"
+        content += "export PATH=$JAVA_HOME/bin:$PATH \n"
+        content += "export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar\n"
+        file_util.append_file("/etc/profile", content)
+        cmd = "cp -rf " + self.__jdk_path + " /opt/"
+        cmd += " && source /etc/profile"
+        cmd_util.exec_cmd(cmd)
+
+    def config_zk(self):
+        """
+        配置并启动zookeeper
+        :return: None
+        """
+        cmd = "cp -rf " + self.__zk_path + " /opt/"
+        cmd += " && cd /opt/zookeeper/bin && bash zkServer.sh restart"
+        cmd_util.exec_cmd(cmd)

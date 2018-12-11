@@ -25,6 +25,20 @@ def create_file(file_path, content=""):
         file.close()
 
 
+def append_file(file_path, content=""):
+    """
+    追加内容到指定文件
+    :param file_path: 文件路径
+    :param content: 需要写入的文件内容
+    :return: None
+    """
+    path = os.path.abspath(file_path)
+    if not os.path.exists(path) or os.path.isfile(path):
+        file = open(path, 'a', encoding="UTF-8")
+        file.write(content)
+        file.close()
+
+
 def read_file(file_path):
     """
     读取文件内容

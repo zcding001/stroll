@@ -51,7 +51,7 @@ class ConfigHandler:
         self.__config.read(config_ini_path)
         # 节点不在直接抛出异常
         if sec_name not in self.__config.sections():
-            raise Exception("node %s no exit" % sec_name)
+            raise Exception("node %s no exit", sec_name)
         # 加载全局配置
         self.dst_path = os.path.abspath(self.__config.get("global", "dst_path"))
         self.mvn_path = self.__config.get("global", "mvn_path")
