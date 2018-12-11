@@ -133,6 +133,7 @@ def copy_file(src_file_path, dst_path, only_parent=False):
     :param only_parent: 只创建到dst_path路径
     :return: None
     """
+    logging.debug("copy file from [%s] to [%s]", src_file_path, dst_path)
     if only_parent:
         make_dirs(get_parent_path(dst_path))
     else:
