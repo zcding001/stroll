@@ -96,5 +96,5 @@ class BuildHandler:
                 file_util.copy_file(src_path, dst_path)
                 if str(src_path).endswith(".jar"):
                     src_lib_path = file_util.get_parent_path(src_path) + "/lib"
-                    dst_lib_path = file_util.get_parent_path(dst_path) + "/lib"
+                    dst_lib_path = dst_path + "/lib"
                     file_util.copy_path(src_lib_path, dst_lib_path, remove=True)
