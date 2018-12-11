@@ -164,13 +164,13 @@ class ServiceHandler:
         flag = 'Dubbo service server started'
         count = 1
         finish = False
-        logging.info("total %s times" % self.__ini_config.container_root_path)
-        while count < self.__ini_config.container_root_path:
+        logging.info("total %s times" % self.__ini_config.producer_try_times)
+        while count < self.__ini_config.producer_try_times:
             logging.info("try %s times to get dubbo running status." % count)
             time.sleep(3)
             content = file_util.read_file(self.__new_service_path + os.path.sep + self.__service_log)
             if content.count(flag) > 0:
-                count = self.__ini_config.container_root_path
+                count = self.__ini_config.producer_try_times
                 finish = True
             else:
                 # 休息3秒继续执行
