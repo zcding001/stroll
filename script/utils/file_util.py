@@ -142,6 +142,7 @@ def copy_file(src_file_path, dst_path, only_parent=False):
 
 
 def copy_path(src_path, dst_path, remove=False):
+    logging.debug("copy file from [%s] to [%s]", src_path, dst_path)
     if remove and os.path.exists(dst_path) and os.path.isdir(dst_path):
         shutil.rmtree(dst_path)
     shutil.copytree(src_path, dst_path)
