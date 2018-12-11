@@ -73,11 +73,12 @@ class ServiceHandler:
         file_util.make_dirs(self.__parent_path)
         # self.__jre_home = self.__parent_path + "jdk/jre/bin/java"
         self.__service_name = service_name
-        self.__jar_name = service_name + "-1.0-snapshot.jar"
+        self.__jar_name = service_name + "-1.0-SNAPSHOT.jar"
         self.__pid = "service.pid"
         self.__service_log = "service.log"
         # debug端口
         self.__producer_debug_port_start = self.__ini_config.producer_debug_port_start
+        self.__producer_protocol_port_start = self.__ini_config.producer_protocol_port_start
 
     def start(self):
         """
@@ -86,22 +87,24 @@ class ServiceHandler:
         """
         self.__create_node()
         cmd = "cd " + self.__new_service_path + " && "
-        cmd += "nohup java"
+        cmd += "nohup java -jar"
         # 判断是否开启代理
         if self.__ini_config.agent == "1":
-            cmd += " -javaagent: " + self.__new_service_path + "/agent/skywalking-agent.jar"
+            cmd += " -javaagent:" + self.__new_service_path + "/agent/skywalking-agent.jar"
         # 判断是否开启了debug
-        cmd += " -jar -Xms256m -Xmx256m"
+        cmd += " -Xms256m -Xmx256m"
+        interval = self.__ini_config.producer_list.index(self.__service_name)
+        if self.__new_service_path.endswith(self.__ini_config.backup_suffix):
+            interval += 100
         if self.__ini_config.debug == "1":
-            interval = self.__ini_config.producer_list.index(self.__service_name)
-            if self.__new_service_path.endswith(self.__ini_config.backup_suffix):
-                interval += 100
             debug_port = cmd_util.get_usable_port(self.__producer_debug_port_start + interval)
             cmd += " -Xdebug -Dsun.zip.disableMemoryMapping=true -Xrunjdwp:transport=dt_socket,"
-            cmd += "address=" + str(debug_port) + ",server=y, suspend=n"
-        cmd += " " + self.__jar_name + " >> " + self.__service_log + "2>&1 &"
+            cmd += "address=" + str(debug_port) + ",server=y,suspend=n"
+        cmd += " -Ddubbo.protocol.port=" + str(cmd_util.get_usable_port(self.__producer_protocol_port_start + interval))
+        cmd += " " + self.__jar_name + " >> " + self.__service_log + " 2>&1 &"
+        cmd_util.exec_cmd(cmd)
         # 存储pid
-        cmd += " && echo $! > " + self.__pid
+        cmd = "cd " + self.__new_service_path + " && echo $! > " + self.__pid
         cmd_util.exec_cmd(cmd)
         # 启动监控，处理服务启动后续操作
         self.__start_monitor()
@@ -128,21 +131,25 @@ class ServiceHandler:
         # 创建存储运行中node的路径
         self.__nodes_path = self.__parent_path + "nodes"
         file_util.make_dirs(self.__nodes_path)
+        # 判断当前运行的节点是不是备份节点
         self.__new_node_path = os.path.abspath(self.__nodes_path + "/" + self.__service_name)
         self.__old_node_path = self.__new_node_path + self.__ini_config.backup_suffix
+        self.__new_service_path = self.__parent_path + self.__ini_config.get_module_name(self.__service_name)
+        self.__old_service_path = self.__new_service_path + self.__ini_config.backup_suffix
         # Do you need to wait
         self.__waiting()
         if os.path.exists(self.__new_node_path) and os.path.isfile(self.__new_node_path):
             self.__old_node_path = self.__new_node_path
             self.__new_node_path += self.__ini_config.backup_suffix
-        file_util.create_file(self.__new_node_path)
-
-        # 判断当前运行的节点是不是备份节点
-        self.__new_service_path = self.__parent_path + self.__ini_config.get_module_name(self.__service_name)
-        self.__old_service_path = self.__new_service_path + self.__ini_config.backup_suffix
-        if os.path.exists(self.__new_node_path) and os.path.isfile(self.__new_node_path):
             self.__old_service_path = self.__new_service_path
             self.__new_service_path += self.__ini_config.backup_suffix
+        logging.info("******************************************************")
+        logging.info("* new_node_path is %s.", self.__new_node_path)
+        logging.info("* old_node_path is %s.", self.__old_node_path)
+        logging.info("* new_service_path is %s.", self.__new_service_path)
+        logging.info("* old_service_path is %s.", self.__old_service_path)
+        logging.info("******************************************************")
+        file_util.create_file(self.__new_node_path)
 
     def __waiting(self, times=1):
         """
@@ -176,16 +183,19 @@ class ServiceHandler:
                 # 休息3秒继续执行
                 time.sleep(3)
                 count += 1
+        logging.info("******************************************************")
+        logging.info("* Dubbo service status is %s.", finish)
+        logging.info("******************************************************")
         if finish:
             # 删除旧的node文件
             file_util.del_path(self.__nodes_path, os.path.basename(self.__old_node_path))
             # 停止旧的服务
-            self.stop(self.__old_node_path)
+            self.stop(self.__old_service_path)
         else:
             # 删除新的node文件
             file_util.del_path(self.__nodes_path, os.path.basename(self.__new_node_path))
             # 停止新的服务
-            self.stop(self.__new_node_path)
+            self.stop(self.__new_service_path)
 
     def start_web(self):
         """启动web"""
