@@ -7,7 +7,9 @@ from handler import config_handler
 from utils import cmd_util, file_util
 import os
 import logging
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
+import coloredlogs
+
+coloredlogs.install(level=logging.DEBUG, fmt='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
 
 def build_running_env(sec_name):

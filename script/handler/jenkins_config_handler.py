@@ -85,9 +85,17 @@ class JenkinsConfigParser:
         for obj in (self.__ini_config.producer_list + self.__ini_config.customer_list):
             job_abs_dst_path = self.__ini_config.job_dst_path + os.path.sep + self.__get_job_name(obj)
             shutil.copytree(self.__job_template_path, job_abs_dst_path, symlinks=False, ignore=None)
+            stroll_sec_name = self.__ini_config.sec_name
+            stroll_remote = self.__ini_config.get_module_name(obj) + "/"
+            stroll_remote_backup = stroll_remote + self.__ini_config.backup + "/"
+            stroll_war_jar = "**/*.jar"
+            if self.__ini_config.customer_list.count(obj) > 0:
+                stroll_war_jar = "*.war"
+                stroll_remote = self.__ini_config.get_module_name(obj) + "/webapps/"
+                stroll_remote_backup = stroll_remote + self.__ini_config.backup + "/webapps/"
             file_util.replace(job_abs_dst_path + os.path.sep + "config.xml",
-                              ["stroll_node", "stroll_service", "stroll_port"],
-                              [self.__ini_config.sec_name, obj, self.__ini_config.proxy_ssh_port])
+                              ["stroll_sec_name", "stroll_service", "stroll_remote", "stroll_remote_backup", "stroll_war_jar"],
+                              [stroll_sec_name, obj, stroll_remote, stroll_remote_backup, stroll_war_jar])
 
     def _del_jobs(self):
         """

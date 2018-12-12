@@ -13,6 +13,7 @@ import coloredlogs
 # pip install coloredlogs
 coloredlogs.install(level=logging.DEBUG, fmt='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
+
 def test():
     content = "\n"
     content += "export JAVA_HOME=/opt/jdk \n"
@@ -60,7 +61,6 @@ def test_http_util():
 
 
 if __name__ == "__main__":
-    # service_handler.test("hkjf_master")
     # test_config()
     # print(os.path.getctime(os.path.abspath("./config/nginx.conf")))
     # print(test_file_create_time_sort())

@@ -8,13 +8,10 @@ from utils import cmd_util, file_util, http_util
 import os
 import time
 import logging
+import coloredlogs
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
+coloredlogs.install(level=logging.DEBUG, fmt='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
-
-def test(sec_name):
-    data = config_handler.get_node_info(sec_name)
-    ServiceHandler(data, "financial").reload_nginx()
 
 def switch(sec_name, service_name, action):
     """
@@ -25,6 +22,14 @@ def switch(sec_name, service_name, action):
     :return: None
     """
     data = config_handler.get_node_info(sec_name)
+    if len(service_name) == 0:
+        for s in data.customer_list + data.producer_list:
+            __pre_do_start(data, s, action)
+    else:
+        __pre_do_start(data, service_name, action)
+
+
+def __pre_do_start(data, service_name, action):
     sh = ServiceHandler(data, service_name)
     if data.customer_list.count(service_name) > 0:
         __start_web(sh, action)
