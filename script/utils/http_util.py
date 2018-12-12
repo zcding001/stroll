@@ -9,9 +9,9 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
 
 
-def send_request(url):
+def send_request(url, timeout=3):
     try:
-        res = urllib.request.urlopen(url)
+        res = urllib.request.urlopen(url, timeout)
         code = res.getcode()
         logging.info("request response code is [%s].", code)
         if code == 200:
