@@ -110,9 +110,8 @@ class ServiceHandler:
         # 自定义dubbo协议端口号
         cmd += " -Ddubbo.protocol.port=" + port_list[0]
         cmd += " " + self.__jar_name + " >> " + self.__service_log + " 2>&1 &"
-        cmd_util.exec_cmd(cmd)
         # 存储pid
-        cmd = "cd " + self.__new_service_path + " && echo $! > " + self.__pid
+        cmd += " echo $! > " + self.__pid
         cmd_util.exec_cmd(cmd)
         # 启动监控，处理服务启动后续操作
         self.__start_monitor()
