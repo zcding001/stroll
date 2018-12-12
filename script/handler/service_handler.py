@@ -287,7 +287,7 @@ class ServiceHandler:
             for tup in self.__get_running_nodes():
                 # 若果找到最先匹配的节点就停止遍历
                 if os.path.basename(tup[0]).count(c) > 0:
-                    list.append((c, tup[0]))
+                    tup_list.append((c, tup[0]))
                     break
         for t in tup_list:
             upstream_content += self.__get_upstream(t)
