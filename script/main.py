@@ -116,7 +116,7 @@ if __name__ == "__main__":
     try:
         Main().switch()
     except ParamException as paramException:
-        print(sys.argv)
-        print(paramException)
+        logging.error(sys.argv)
+        logging.error(paramException)
         time.sleep(3)
         raise paramException
