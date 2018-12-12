@@ -248,12 +248,12 @@ class ServiceHandler:
             # 重新加载nginx
             self.reload_nginx()
             # 停止旧的服务
-            self.stop_web(self.__old_node_path)
+            self.stop_web(self.__old_service_path)
         else:
             # 删除新的node文件
             file_util.del_path(self.__nodes_path, os.path.basename(self.__new_node_path))
             # 停止新的服务
-            self.stop_web(self.__new_node_path)
+            self.stop_web(self.__new_service_path)
 
     def reload_nginx(self):
         nginx_path = os.path.abspath("./config/nginx.conf")
@@ -281,10 +281,11 @@ class ServiceHandler:
         tup_list = []
         upstream_content = ""
         location_content = ""
+        tups = self.__get_running_nodes()
         # 遍历消费(web列表)
         for c in self.__ini_config.customer_list:
             # 运行中或是启动的中node节点
-            for tup in self.__get_running_nodes():
+            for tup in tups:
                 # 若果找到最先匹配的节点就停止遍历
                 if os.path.basename(tup[0]).count(c) > 0:
                     tup_list.append((c, tup[0]))
@@ -296,27 +297,28 @@ class ServiceHandler:
         return tup
 
     def __get_upstream(self, tup):
-        content = "\t\tupstream " + tup[0] + " {\n"
+        content = "\tupstream " + tup[0] + " {\n"
         port_list = self.__ini_config.get_tomcat_port_list(tup[0], tup[1])
-        content += "\t\t\tserver localhost:" + port_list[1] + ";\n"
-        content += "\t\t}\n"
+        content += "\t\tserver localhost:" + port_list[1] + ";\n"
+        content += "\t}\n"
         return content
 
     def __get_location(self, tup):
         service_name = self.__ini_config.get_module_name(tup[0])
-        content = "\t\t\t\tlocation /" + service_name + " {\n"
-        content += "\t\t\t\t\tproxy_pass http://" + tup[0] + ";\n"
-        content += "\t\t\t\t\tproxy_cookie_path /" + service_name + " /;\n"
-        content += "\t\t\t\t\tproxy_set_header Host $host;\n"
-        content += "\t\t\t\t\tproxy_set_header X-Real-IP $remote_addr;\n"
-        content += "\t\t\t\t\tproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
-        content += "\t\t\t\t\tproxy_redirect     off;\n"
-        content += "\t\t\t\t\tproxy_read_timeout  60s;\n"
-        content += "\t\t\t\t\tproxy_connect_timeout   60s;\n"
-        content += "\t\t\t\t\tproxy_send_timeout   60s;\n"
-        content += "\t\t\t\t\tproxy_set_header X-Forwarded-Proto https;\n"
-        content += "\t\t\t\t\tproxy_intercept_errors on;\n"
-        content += "\t\t\t\t\taccess_log /var/log/nginx/access.log main;\n"
+        content = "\t\tlocation /" + service_name + " {\n"
+        content += "\t\t\tproxy_pass http://" + tup[0] + ";\n"
+        content += "\t\t\tproxy_cookie_path /" + service_name + " /;\n"
+        content += "\t\t\tproxy_set_header Host $host;\n"
+        content += "\t\t\tproxy_set_header X-Real-IP $remote_addr;\n"
+        content += "\t\t\tproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
+        content += "\t\t\tproxy_redirect     off;\n"
+        content += "\t\t\tproxy_read_timeout  60s;\n"
+        content += "\t\t\tproxy_connect_timeout   60s;\n"
+        content += "\t\t\tproxy_send_timeout   60s;\n"
+        content += "\t\t\tproxy_set_header X-Forwarded-Proto https;\n"
+        content += "\t\t\tproxy_intercept_errors on;\n"
+        content += "\t\t\taccess_log /var/log/nginx/access.log main;\n"
+        content += "\t\t\t}\n"
         return content
 
     def __get_running_nodes(self):
