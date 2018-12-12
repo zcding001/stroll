@@ -205,7 +205,7 @@ class ConfigHandler:
         :param path: dubbo服务路径
         :return: 端口集合
         """
-        interval = self.customer_list.index(name)
+        interval = self.producer_list.index(name)
         if path.endswith(self.backup_suffix):
             interval += 100
         port1 = int(self.producer_debug_port_start) + interval

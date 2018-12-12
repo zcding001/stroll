@@ -106,7 +106,7 @@
 # -----------------------------------------------------------------------------
 
 # OS specific support.  $var _must_ be set to either true or false.
-
+JAVA_HOME=/opt/jdk
 CATALINA_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,address=stroll_debug_port,suspend=n,server=y"
 [[ ${CATALINA_OPTS} =~ "stroll_port" ]] && CATALINA_OPTS=""
 
