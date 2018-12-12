@@ -105,7 +105,8 @@ class JenkinsConfigParser:
         for obj in (self.__ini_config.producer_list + self.__ini_config.customer_list):
             job_abs_dst_path = self.__ini_config.job_dst_path + os.path.sep + self.__get_job_name(obj)
             logging.warning("del job config: " + job_abs_dst_path)
-            shutil.rmtree(job_abs_dst_path)
+            if os.path.exists(job_abs_dst_path):
+                shutil.rmtree(job_abs_dst_path)
 
     def __create_list_view(self, job_list):
         """
