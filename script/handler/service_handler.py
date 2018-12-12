@@ -106,9 +106,9 @@ class ServiceHandler:
         if self.__ini_config.debug == "1":
             # debug端口
             cmd += " -Xdebug -Dsun.zip.disableMemoryMapping=true -Xrunjdwp:transport=dt_socket,"
-            cmd += "address=" + port_list[2] + ",server=y,suspend=n"
+            cmd += "address=" + port_list[1] + ",server=y,suspend=n"
         # 自定义dubbo协议端口号
-        cmd += " -Ddubbo.protocol.port=" + port_list[1]
+        cmd += " -Ddubbo.protocol.port=" + port_list[0]
         cmd += " " + self.__jar_name + " >> " + self.__service_log + " 2>&1 &"
         cmd_util.exec_cmd(cmd)
         # 存储pid
