@@ -17,5 +17,5 @@ def send_request(url, timeout=3):
         if code == 200:
             return code
     except Exception as e:
-        logging.error("Sending request fail. url is [%s]", url, e)
+        logging.error("Sending request fail. url is [%s]", url)
     return -200
