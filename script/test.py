@@ -55,11 +55,16 @@ def test_log_color():
     logging.critical("this is a critical message")
 
 
+def test_http_util():
+    http_util.send_request("http://www.baidu.com", timeout=3000)
+
+
 if __name__ == "__main__":
     # service_handler.test("hkjf_master")
     # test_config()
     # print(os.path.getctime(os.path.abspath("./config/nginx.conf")))
     # print(test_file_create_time_sort())
-    test_log_color()
+    # test_log_color()
+    test_http_util()
 
 

@@ -11,11 +11,11 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(filename)s[line:%
 
 def send_request(url, timeout=3):
     try:
-        res = urllib.request.urlopen(url, timeout)
+        res = urllib.request.urlopen(url, timeout=timeout)
         code = res.getcode()
         logging.info("request response code is [%s].", code)
         if code == 200:
             return code
-    except Exception:
-        logging.error("Sending request fail. url is [%s]", url)
+    except Exception as e:
+        logging.error("Sending request fail. url is [%s]", url, e)
     return -200
