@@ -129,9 +129,10 @@ class ServiceHandler:
         try:
             if path == "":
                 path = self.__new_service_path
-            cmd = "cd " + path + " &&"
-            cmd += " kill -9 `cat " + self.__pid + "`"
-            cmd_util.exec_cmd(cmd)
+            # cmd = "cd " + path + " &&"
+            # cmd += " kill -9 `cat " + self.__pid + "`"
+            port_list = self.__ini_config.get_service_port_list(self.__service_name, path)
+            cmd_util.exec_cmd("kill -9 `ps -ef | grep -w 'dubbo.protocol.port=" + port_list[0] + "' | grep -v 'grep' | awk '{print $2}'`")
         except Exception:
             logging.error("stop tomcat fail. Don't care about")
 
