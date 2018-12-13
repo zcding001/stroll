@@ -21,7 +21,7 @@ def build_running_env(sec_name):
     bre = RunningEnvHandler(config_handler.get_node_info(sec_name))
     bre.build_web_env()
     bre.build_service_env()
-    bre.config_jdk()
+    # bre.config_jdk()
     bre.config_zk()
 
 
@@ -127,6 +127,7 @@ class RunningEnvHandler:
         content += "export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar\n"
         file_util.append_file("/etc/profile", content)
         cmd = "cp -rf " + self.__jdk_path + " /opt/"
+        cmd += " && source /etc/profile"
         cmd_util.exec_cmd(cmd)
 
     def config_zk(self):
@@ -135,6 +136,6 @@ class RunningEnvHandler:
         :return: None
         """
         cmd = "cp -rf " + self.__zk_path + " /opt/"
-        cmd += " && source /etc/profile"
+        # cmd += " && source /etc/profile"
         cmd += " && cd /opt/zookeeper/bin && bash ./zkServer.sh restart"
         cmd_util.exec_cmd(cmd)
