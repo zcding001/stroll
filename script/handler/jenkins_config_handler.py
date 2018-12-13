@@ -94,8 +94,8 @@ class JenkinsConfigParser:
                 stroll_remote = self.__ini_config.get_module_name(obj) + "/webapps/"
                 stroll_remote_backup = self.__ini_config.get_module_name(obj) + self.__ini_config.backup_suffix + "/webapps/"
             file_util.replace(job_abs_dst_path + os.path.sep + "config.xml",
-                              ["stroll_sec_name", "stroll_service", "stroll_remote", "stroll_remote_backup", "stroll_war_jar"],
-                              [stroll_sec_name, obj, stroll_remote, stroll_remote_backup, stroll_war_jar])
+                              ["stroll_sec_name", "stroll_service", "stroll_remote_backup", "stroll_remote", "stroll_war_jar"],
+                              [stroll_sec_name, obj, stroll_remote_backup, stroll_remote, stroll_war_jar])
 
     def _del_jobs(self):
         """
