@@ -31,7 +31,7 @@ class BuildHandler:
     def __init__(self, data):
         self.__ini_config = data
         self.__env_path = os.path.abspath(self.__ini_config.env_path)
-        self.__common_env_path = self.__ini_config.src_path + os.path.sep + "env"
+        self.__dst_common_env_path = self.__ini_config.src_path + os.path.sep + "env"
         self.__service_path = self.__ini_config.src_path + "/fiance-#/finance-#-services/src/main/resources/env"
         self.__mvn_cmd = "cd " + self.__ini_config.src_path + " && " + self.__ini_config.mvn_path
         # self.__mvn_cmd += " clean package -pl # -am resources:resources -Dmaven.test.skip=true -Penv-test"
@@ -55,7 +55,8 @@ class BuildHandler:
         common_file_list = file_util.list_files(self.__env_path, root_name="common")
         logging.debug("copy common resources")
         for common_file in common_file_list:
-            file_util.copy_file(common_file, os.path.abspath(self.__common_env_path))
+            if common_file.endwith(".properties"):
+                file_util.copy_file(common_file, os.path.abspath(self.__dst_common_env_path))
 
         # 复制服务的properties到对应资源路径
         service_file_list = file_util.list_files(self.__env_path, child=False)
@@ -65,6 +66,7 @@ class BuildHandler:
             dst_path = os.path.abspath(self.__ini_config.get_service_resources_path(name))
             file_util.del_path(dst_path)
             file_util.copy_file(service_file, dst_path)
+            file_util.copy_file(os.path.abspath(self.__env_path + "/env/log4j.xml"), file_util.get_parent_path(dst_path))
 
         # 复制web资源
         web_file_list = file_util.list_files(self.__env_path, root_name="web-conf")
@@ -74,6 +76,7 @@ class BuildHandler:
             dst_path = os.path.abspath(self.__ini_config.get_web_resources_path(name))
             file_util.del_path(dst_path)
             file_util.copy_file(web_file, dst_path)
+            file_util.copy_file(os.path.abspath(self.__env_path + "/env/log4j.xml"), file_util.get_parent_path(dst_path))
 
     def _build_project(self, service_name=""):
         """
