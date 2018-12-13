@@ -55,7 +55,7 @@ class BuildHandler:
         common_file_list = file_util.list_files(self.__env_path, root_name="common")
         logging.debug("copy common resources")
         for common_file in common_file_list:
-            if common_file.endwith(".properties"):
+            if common_file.endswith(".properties"):
                 file_util.copy_file(common_file, os.path.abspath(self.__dst_common_env_path))
 
         # 复制服务的properties到对应资源路径
