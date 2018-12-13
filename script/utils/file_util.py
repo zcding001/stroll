@@ -159,7 +159,14 @@ def copy_path(src_path, dst_path, remove=False):
     logging.info("copy file from [%s] to [%s]", src_path, dst_path)
     if remove and os.path.exists(dst_path) and os.path.isdir(dst_path):
         shutil.rmtree(dst_path)
-    shutil.copytree(src_path, dst_path)
+    for item in os.listdir(src_path):
+        s = os.path.join(src_path, item)
+        d = os.path.join(dst_path, item)
+        if os.path.isdir(s):
+            shutil.copytree(s, d)
+        else:
+            shutil.copy2(s, d)
+    # shutil.copytree(src_path, dst_path)
 
 
 def del_path(path, *file_name):
