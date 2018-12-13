@@ -136,5 +136,6 @@ class RunningEnvHandler:
         :return: None
         """
         cmd = "cp -rf " + self.__zk_path + " /opt/"
+        cmd += " && source /etc/profile"
         cmd += " && cd /opt/zookeeper/bin && bash ./zkServer.sh restart"
         cmd_util.exec_cmd(cmd)
