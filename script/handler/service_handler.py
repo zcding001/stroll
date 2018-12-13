@@ -95,8 +95,8 @@ class ServiceHandler:
         self.__create_node()
         # 清理历史资源
         cmd = "cd " + self.__new_service_path + " && "
-        cmd += " echo '' > " + self.__service_log + " &&"
-        cmd += " echo '' > " + self.__pid + " &&"
+        # cmd += " echo '' > " + self.__service_log + " &&"
+        # cmd += " echo '' > " + self.__pid + " &&"
         cmd += " rm -rf logs/*"
         cmd_util.exec_cmd(cmd)
         # 创建启动脚本
@@ -114,7 +114,7 @@ class ServiceHandler:
             cmd += "address=" + port_list[1] + ",server=y,suspend=n"
         # 自定义dubbo协议端口号
         cmd += " -Ddubbo.protocol.port=" + port_list[0]
-        cmd += " " + self.__jar_name + " >> " + self.__service_log + " 2>&1 &"
+        cmd += " " + self.__jar_name + " > " + self.__service_log + " 2>&1 &"
         # 存储pid
         cmd += " echo $! > " + self.__pid
         cmd_util.exec_cmd(cmd)
@@ -224,6 +224,8 @@ class ServiceHandler:
                 path = self.__new_service_path
             cmd = "cd " + path + "/bin/"
             cmd += " && sh shutdown.sh"
+            cmd_util.exec_cmd(cmd)
+            cmd = "cd " + path + " && rm -rf ./logs/* && rm -rf ./webapps/*"
             cmd_util.exec_cmd(cmd)
         except Exception:
             logging.info("stop tomcat fail. Don't care about")
