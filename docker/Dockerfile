@@ -12,6 +12,7 @@ FROM phusion/baseimage:0.10.1
 COPY sshd_config /etc/ssh/sshd_config
 COPY Shanghai /etc/localtime
 COPY get-pip.py /etc/
+COPY profile /etc/
 
 #enable sshd
 RUN rm -rf /etc/service/sshd/down

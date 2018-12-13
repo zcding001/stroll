@@ -127,7 +127,6 @@ class RunningEnvHandler:
         content += "export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar\n"
         file_util.append_file("/etc/profile", content)
         cmd = "cp -rf " + self.__jdk_path + " /opt/"
-        cmd += " && source /etc/profile"
         cmd_util.exec_cmd(cmd)
 
     def config_zk(self):
