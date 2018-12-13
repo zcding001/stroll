@@ -81,7 +81,7 @@ class Main:
             if action == "add":
                 container_handler.run_container(self.__sec_name)
             elif action == "del":
-                container_handler.run_container(self.__sec_name)
+                container_handler.del_container(self.__sec_name)
             else:
                 raise Exception("please confirm parameters.")
         elif self.__option == "env":
