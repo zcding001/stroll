@@ -11,7 +11,7 @@ FROM phusion/baseimage:0.10.1
 
 COPY sshd_config /etc/ssh/sshd_config
 COPY Shanghai /etc/localtime
-#COPY get-pip.py /etc/
+COPY get-pip.py /etc/
 
 #enable sshd
 RUN rm -rf /etc/service/sshd/down
@@ -22,14 +22,15 @@ RUN /bin/echo 'root:Docker@123'|chpasswd
 RUN apt-get update && apt-get install -y nginx
 RUN apt-get install -y net-tools
 
-#install python3
-RUN add-apt-repository ppa:jonathonf/python-3.6 && apt-get install python3.6 && python3 /etc/get-pip.py && pip install coloredlogs
+#install python3, Ubuntu 16.04 had installed python3.5.2
+#add-apt-repository ppa:jonathonf/python-3.6 && apt-get install python3.6
+RUN python3 /etc/get-pip.py && pip install coloredlogs
 
 # Clean up APT when done.
 RUN echo 'Asia/Shanghai' >/etc/timezone && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Define commonly used JAVA_HOME variable
-#ENV JAVA_HOME /share/soft/jdk
+#ENV JAVA_HOME /opt/jdk
 
 #暴露端口
 EXPOSE 5000-5010

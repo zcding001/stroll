@@ -18,7 +18,7 @@ def run_container(sec_name):
     cmd += " -p " + data.proxy_ssh_port + ":22"
     cmd += " -it -P"
     cmd += " -v " + data.local_share_path + ":/data/www"
-    cmd += " --name='" + data.sec_name + "' stroll:v1 /sbin/my_init"
+    cmd += " --name='" + data.sec_name + "' stroll:v2 /sbin/my_init"
     cmd_util.exec_cmd(cmd)
 
 
