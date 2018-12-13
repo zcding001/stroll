@@ -34,7 +34,8 @@ class BuildHandler:
         self.__common_env_path = self.__ini_config.src_path + os.path.sep + "env"
         self.__service_path = self.__ini_config.src_path + "/fiance-#/finance-#-services/src/main/resources/env"
         self.__mvn_cmd = "cd " + self.__ini_config.src_path + " && " + self.__ini_config.mvn_path
-        self.__mvn_cmd += " clean package -pl # -am resources:resources -Dmaven.test.skip=true -Penv-test"
+        # self.__mvn_cmd += " clean package -pl # -am resources:resources -Dmaven.test.skip=true -Penv-test"
+        self.__mvn_cmd += " clean install -f ./#/pom.xml resources:resources -Dmaven.test.skip=true -Penv-test"
 
     def _git_pull(self):
         """
