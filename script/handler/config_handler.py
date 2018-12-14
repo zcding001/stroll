@@ -61,7 +61,7 @@ class ConfigHandler:
         self.producer_try_times = int(self.__get_value("producer_try_times", sec_name="global"))
         self.customer_try_times = int(self.__get_value("customer_try_times", sec_name="global"))
         logging.debug("*****global config info*************************")
-        logging.debug("*dst_path=%s, mvn_path=%s, ln_log_dst_path=%s" % (self.dst_path, self.mvn_path, self.ln_log_dst_path))
+        logging.debug("*dst_path=%s, mvn_path=%s" % (self.dst_path, self.mvn_path))
         logging.debug("*****global config info*************************")
         # 加载jenkins配置
         self.config_xml_path = os.path.abspath(self.__config.get("jenkins", "config_xml_path"))
