@@ -391,5 +391,5 @@ class ServiceHandler:
         file.close()
         dst_path = os.path.abspath("/data/index.html")
         dst_file = open(dst_path, "w+", encoding="UTF-8")
-        dst_file.write(content)
+        dst_file.write(result)
         dst_file.close()
