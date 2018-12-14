@@ -1,0 +1,7 @@
+文件夹存放内容
+    tomcat：需用script/config/catalina 和server.xml替换tomcat中默认的文件
+    jdk*
+    zk
+    agent
+    
+    
