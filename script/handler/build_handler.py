@@ -42,7 +42,7 @@ class BuildHandler:
         拉取最新代码
         :return: None
         """
-        cmd = "cd " + self.__ini_config.src_path + " && git checkout . && git checkout " + self.__ini_config.branch_name + " && git pull"
+        cmd = "cd " + self.__ini_config.src_path + " && git checkout . && git checkout " + self.__ini_config.branch_name + " && git pull origin " + self.__ini_config.branch_name
         if cmd_util.exec_cmd(cmd) != 0:
             raise Exception("command " + cmd + " execute fail. can't pull ")
 
