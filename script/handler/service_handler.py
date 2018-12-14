@@ -383,7 +383,7 @@ class ServiceHandler:
         file = open(src_index_path, "r", encoding="UTF-8")
         result = ""
         for line in file:
-            line.replace("stroll_sec_name", self.__ini_config.sec_name)
+            line = line.replace("stroll_sec_name", self.__ini_config.sec_name)
             if line.count("stroll_serivce_status") > 0:
                 result += content
             else:
