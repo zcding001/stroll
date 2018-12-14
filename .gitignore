@@ -7,7 +7,7 @@
 *.iws
 
 # temp ignore
-*.log
+# *.log
 *.cache
 *.diff
 *.patch
@@ -30,5 +30,10 @@ startModule/
 venv
 */venv
 */__pycache__
-*/__pycache__/
+**/__pycache__/*
+**/soft/**
+**/data/www/*
+
+script/handler/__pycache__
+script/utils/__pycache__
 
