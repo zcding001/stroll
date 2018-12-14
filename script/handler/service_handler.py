@@ -355,13 +355,14 @@ class ServiceHandler:
         :return: None
         """
         content = ""
-        temp = "<tr><td>name</td><td>停止</td><td>debug</td><td>log</td></tr>"
         node_list = self.__get_running_nodes()
         for o in self.__ini_config.customer_list + self.__ini_config.producer_list:
             backup = o + self.__ini_config.backup_suffix
+            logging.debug("service name is %s", o)
+            logging.debug("bacup service name is %s", backup)
             # 替换服务名称
-            a = temp.replace("name", o)
-            b = temp.replace("name", backup)
+            a = "<tr><td>" + o + "</td><td>停止</td><td>debug</td><td>log</td></tr>"
+            b = "<tr><td>" + backup + "</td><td>停止</td><td>debug</td><td>log</td></tr>"
             # 替换debug端口
             if self.__ini_config.customer_list.count(o) > 0:
                 a = a.replace("debug", self.__ini_config.get_tomcat_port_list(o, o)[3])
