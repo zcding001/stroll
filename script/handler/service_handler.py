@@ -27,6 +27,8 @@ def switch(sec_name, service_name, action):
             __pre_do_start(data, s, action)
     else:
         __pre_do_start(data, service_name, action)
+    # 更新服务运行状态的index.html
+    ServiceHandler(data, service_name).update_index()
 
 
 def __pre_do_start(data, service_name, action):
@@ -85,6 +87,7 @@ class ServiceHandler:
         self.__jar_name = service_name + "-1.0-SNAPSHOT.jar"
         self.__pid = "service.pid"
         self.__service_log = "service.log"
+        self.__nodes_path = self.__parent_path + "nodes"
 
     def start(self):
         """
@@ -142,7 +145,6 @@ class ServiceHandler:
         :return: None
         """
         # 创建存储运行中node的路径
-        self.__nodes_path = self.__parent_path + "nodes"
         file_util.make_dirs(self.__nodes_path)
         # 判断当前运行的节点是不是备份节点
         self.__new_node_path = os.path.abspath(self.__nodes_path + "/" + self.__service_name)
@@ -346,3 +348,48 @@ class ServiceHandler:
         if len(result) > 0:
             result.sort(key=lambda o: o[1])
         return result
+
+    def update_index(self):
+        """
+        更新节点下无运行状态
+        :return: None
+        """
+        content = ""
+        temp = "<tr><td>name</td><td>停止</td><td>debug</td><td>log</td></tr>"
+        node_list = self.__get_running_nodes()
+        for o in self.__ini_config.customer_list + self.__ini_config.producer_list:
+            backup = o + self.__ini_config.backup_suffix
+            # 替换服务名称
+            a = temp.replace("name", o)
+            b = temp.replace("name", backup)
+            # 替换debug端口
+            if self.__ini_config.customer_list.count(o) > 0:
+                a = a.replace("debug", self.__ini_config.get_tomcat_port_list(o, o)[3])
+                b = b.replace("debug", self.__ini_config.get_tomcat_port_list(o, backup)[3])
+            else:
+                a = a.replace("debug", self.__ini_config.get_service_port_list(o, o)[1])
+                b = b.replace("debug", self.__ini_config.get_service_port_list(o, backup)[1])
+
+            for n in node_list:
+                if n[0].endswith(o):
+                    a = a.replace("停止", "运行中")
+                if n[0].endswith(backup):
+                    b = a.replace("停止", "运行中")
+            a = b.replace("log", self.__parent_path + self.__ini_config.get_module_name(o) + "/logs")
+            b = b.replace("log", self.__parent_path + self.__ini_config.get_module_name(o) + self.__ini_config.backup_suffix + "/logs")
+            content += a
+            content += b
+        src_index_path = os.path.abspath("./config/index.html")
+        file = open(src_index_path, "r", encoding="UTF-8")
+        result = ""
+        for line in file:
+            line.replace("stroll_sec_name", self.__ini_config.sec_name)
+            if line.count("stroll_serivce_status") > 0:
+                result += content
+            else:
+                result += line
+        file.close()
+        dst_path = os.path.abspath("/data/index.html")
+        dst_file = open(dst_path, "w+", encoding="UTF-8")
+        dst_file.write(content)
+        dst_file.close()
