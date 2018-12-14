@@ -375,7 +375,7 @@ class ServiceHandler:
                 if n[0].endswith(o):
                     a = a.replace("停止", "运行中")
                 if n[0].endswith(backup):
-                    b = a.replace("停止", "运行中")
+                    b = b.replace("停止", "运行中")
             a = b.replace("log", self.__parent_path + self.__ini_config.get_module_name(o) + "/logs")
             b = b.replace("log", self.__parent_path + self.__ini_config.get_module_name(o) + self.__ini_config.backup_suffix + "/logs")
             content += a
