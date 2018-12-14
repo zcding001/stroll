@@ -84,7 +84,10 @@ class BuildHandler:
         :param service_name: 指定服务名称
         :return: None
         """
-        cmd = self.__mvn_cmd.replace("#", self.__ini_config.get_module_name(service_name))
+        pom = ""
+        if len(service_name) > 0:
+            pom = self.__ini_config.get_module_name(service_name)
+        cmd = self.__mvn_cmd.replace("#", pom)
         if cmd_util.exec_cmd(cmd) != 0:
             raise Exception("command " + cmd + " execute fail.")
         # 复制构建后的资源
