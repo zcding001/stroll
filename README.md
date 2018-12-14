@@ -1,1 +1,1 @@
-document: https://surpass1990.github.io/index.html
+document: https://surpass1990.github.io/stroll/index.html
