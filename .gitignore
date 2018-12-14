@@ -30,6 +30,7 @@ startModule/
 venv
 */venv
 */__pycache__
+<<<<<<< HEAD
 **/__pycache__/*
 **/soft/**
 **/data/www/*
@@ -37,3 +38,8 @@ venv
 script/handler/__pycache__
 script/utils/__pycache__
 
+=======
+**/__pycache__/
+**/soft/**
+**/data/www/*
+>>>>>>> hkjf/master
