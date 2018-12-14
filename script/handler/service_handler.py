@@ -175,7 +175,10 @@ class ServiceHandler:
                 logging.info("%s had been waiting 1 min, please restart once." % self.__service_name)
                 raise Exception("%s have to wait 1 min, please restart once." % self.__service_name)
             logging.info("both %s and with _suffix is running, waiting for 1 min." % self.__service_name)
-            time.sleep(60)
+            if self.__ini_config.customer_list.count(self.__service_name) > 0:
+                time.sleep(120)
+            else:
+                time.sleep(60)
             times += 1
             self.__waiting(times)
 
