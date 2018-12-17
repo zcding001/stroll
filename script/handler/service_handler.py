@@ -168,8 +168,8 @@ class ServiceHandler:
 
     def __waiting(self, times=1):
         """
-        判断服务节点和备份节点是否都在运行，如果都在运行，等待一分钟后在校验，如果还在运行中，那么终止本次服务启动
-        :param times: 等待次数，一次1分钟
+        判断服务节点和备份节点是否都在运行，如果都在运行，web等待2分钟，dubbo等待1分钟后在校验，如果还在运行中，那么终止本次服务启动
+        :param times: 等待次数
         :return: None
         """
         if os.path.exists(self.__new_node_path) and os.path.isfile(self.__new_node_path) and os.path.exists(self.__old_node_path) and os.path.isfile(self.__old_node_path):
@@ -237,6 +237,10 @@ class ServiceHandler:
             logging.info("stop tomcat fail. Don't care about")
 
     def __start_web_monitor(self):
+        """
+        监听web启动情况
+        :return: 
+        """
         logging.debug("start web monitor...")
         count = 1
         finish = False
@@ -269,6 +273,10 @@ class ServiceHandler:
             self.stop_web(self.__new_service_path)
 
     def reload_nginx(self):
+        """
+        重新加载nginx.conf配置文件
+        :return: 
+        """
         nginx_path = os.path.abspath("./config/nginx.conf")
         file = open(nginx_path, "r", encoding="UTF-8")
         tup = self.__get_upstream_and_location()
@@ -291,6 +299,10 @@ class ServiceHandler:
         cmd_util.exec_cmd("service nginx reload")
 
     def __get_upstream_and_location(self):
+        """
+        封装动态nginx动态代理配置
+        :return: 
+        """
         tup_list = []
         upstream_content = ""
         location_content = ""
@@ -351,7 +363,7 @@ class ServiceHandler:
 
     def update_index(self):
         """
-        更新节点下无运行状态
+        更新节点下服务运行状态
         :return: None
         """
         content = ""

@@ -29,7 +29,7 @@ def del_view_and_jobs(sec_name):
     """
     删除jenkins的view和job
     :param sec_name: config.ini中节点名称
-    :return: Nonw
+    :return: None
     """
     jcp = JenkinsConfigParser(config_handler.get_node_info(sec_name))
     jcp._del_view_list_element()
