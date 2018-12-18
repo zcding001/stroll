@@ -68,7 +68,7 @@ class BuildHandler:
             file_util.copy_file(service_file, dst_path)
             file_util.copy_file(os.path.abspath(self.__env_path + "/common/log4j.xml"), file_util.get_parent_path(dst_path))
             # 删除默认的log4j配置文件
-            file_util.del_path(file_util.get_parent_path(dst_path), "log4j.properties")
+            # file_util.del_path(file_util.get_parent_path(dst_path), "log4j.properties")
 
         # 复制web资源
         web_file_list = file_util.list_files(self.__env_path, root_name="web-conf")
@@ -78,9 +78,6 @@ class BuildHandler:
             dst_path = os.path.abspath(self.__ini_config.get_web_resources_path(name))
             file_util.del_path(dst_path)
             file_util.copy_file(web_file, dst_path)
-            file_util.copy_file(os.path.abspath(self.__env_path + "/common/log4j.xml"), file_util.get_parent_path(dst_path))
-            # 删除默认的log4j配置文件
-            file_util.del_path(file_util.get_parent_path(dst_path), "log4j.properties")
 
     def _build_project(self, service_name=""):
         """
