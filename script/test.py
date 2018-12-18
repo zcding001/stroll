@@ -65,6 +65,7 @@ if __name__ == "__main__":
     # print(os.path.getctime(os.path.abspath("./config/nginx.conf")))
     # print(test_file_create_time_sort())
     # test_log_color()
-    test_http_util()
+    # test_http_util()
+    configHandler = config_handler.get_node_info("stroll_cxj_master")
 
 

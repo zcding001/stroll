@@ -61,7 +61,11 @@ class ConfigHandler:
         self.producer_try_times = int(self.__get_value("producer_try_times", sec_name="global"))
         self.customer_try_times = int(self.__get_value("customer_try_times", sec_name="global"))
         logging.debug("*****global config info*************************")
-        logging.debug("*dst_path=%s, mvn_path=%s" % (self.dst_path, self.mvn_path))
+        logging.debug("*dst_path=%s", self.dst_path)
+        logging.debug("*mvn_path=%s", self.mvn_path)
+        logging.debug("*container_root_path=%s", self.container_root_path)
+        logging.debug("*producer_try_times=%s", self.producer_try_times)
+        logging.debug("*customer_try_times=%s", self.customer_try_times)
         logging.debug("*****global config info*************************")
         # 加载jenkins配置
         self.config_xml_path = os.path.abspath(self.__config.get("jenkins", "config_xml_path"))
@@ -70,6 +74,9 @@ class ConfigHandler:
         logging.debug("*config_xml_path=%s, job_path=%s" % (self.config_xml_path, self.job_dst_path))
         logging.debug("*****jenkins config info************************")
         self.__get_config(sec_name)
+        logging.debug("*****config info************************")
+        logging.info(self.__dict__)
+        logging.debug("*****config info************************")
 
     def __get_config(self, sec_name):
         """
@@ -101,7 +108,6 @@ class ConfigHandler:
         self.version = self.__get_value("version")
         logging.debug("*****node config info***************************")
         logging.debug("agent=%s" % self.agent)
-        logging.debug("*src_path=%s, env_path=%s, producer_list=%s, customer_list=%s, branch_name=%s, proxy_tomcat_port=%s, backup_suffix=%s" % (self.src_path, self.env_path, self.producer_list, self.customer_list, self.branch_name, self.proxy_tomcat_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
 
     def __get_value(self, option, sec_name=""):
