@@ -40,8 +40,8 @@ class ConfigHandler:
                          "customer_suffix": "-services",
                          "version": "-1.0-SNAPSHOT",
                          "proxy_ssh_port": "22",
-                         "debug": 1,
-                         "agent": 0,
+                         "debug": "1",
+                         "agent": "0",
                          "agent_ip": "192.168.1.249:11800",
                          "backup_suffix": "_backup"}
 
