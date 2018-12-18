@@ -228,7 +228,7 @@ class ServiceHandler:
         try:
             if path == "":
                 path = self.__new_service_path
-            cmd = "kill -9 `ps -ef | grep '" + path + "' | grep -v 'grep' | awk '{print $2}'`"
+            cmd = "kill -9 `ps -ef | grep '" + path + "/bin' | grep -v 'grep' | awk '{print $2}'`"
             cmd += " && cd " + path + "/bin/"
             cmd += " && sh shutdown.sh"
             cmd_util.exec_cmd(cmd)
