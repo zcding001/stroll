@@ -214,6 +214,6 @@ class ConfigHandler:
         interval = self.producer_list.index(name)
         if path.endswith(self.backup_suffix):
             interval += 100
-        port1 = int(self.producer_debug_port_start) + interval
-        port2 = int(self.producer_protocol_port_start) + interval
+        port1 = int(self.producer_protocol_port_start) + interval
+        port2 = int(self.producer_debug_port_start) + interval
         return [str(port1), str(port2)]
