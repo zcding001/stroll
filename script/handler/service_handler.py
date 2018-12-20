@@ -334,7 +334,7 @@ class ServiceHandler:
         content = "\t\tlocation /" + service_name + " {\n"
         content += "\t\t\tproxy_pass http://" + tup[0] + ";\n"
         content += "\t\t\tproxy_cookie_path /" + service_name + " /;\n"
-        content += "\t\t\tproxy_set_header Host $host;\n"
+        content += "\t\t\tproxy_set_header Host $host:" + self.__ini_config.proxy_tomcat_port + ";\n"
         content += "\t\t\tproxy_set_header X-Real-IP $remote_addr;\n"
         content += "\t\t\tproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\n"
         content += "\t\t\tproxy_redirect     off;\n"
