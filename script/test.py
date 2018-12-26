@@ -9,6 +9,7 @@ import sys
 import os
 import logging
 import coloredlogs
+import shutil
 
 # pip install coloredlogs
 coloredlogs.install(level=logging.DEBUG, fmt='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
@@ -67,5 +68,6 @@ if __name__ == "__main__":
     # test_log_color()
     # test_http_util()
     configHandler = config_handler.get_node_info("stroll_cxj_master")
-
+    path = "D:/test/py_path/"
+    file_util.copy_path(path + "/tmp/", path)
 

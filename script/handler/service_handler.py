@@ -97,11 +97,13 @@ class ServiceHandler:
         # 创建启动节点
         self.__create_node()
         # 清理历史资源
-        cmd = "cd " + self.__new_service_path + " && "
-        # cmd += " echo '' > " + self.__service_log + " &&"
-        # cmd += " echo '' > " + self.__pid + " &&"
-        cmd += " rm -rf logs/*"
+        cmd = "cd " + self.__new_service_path
+        cmd += " && rm -rf logs/*"
         cmd_util.exec_cmd(cmd)
+        # 将资源从tmp拷贝到执行路径下
+        # if os.path.exists(self.__new_service_path + "/tmp"):
+        #     file_util.copy_path(self.__new_service_path + "/tmp", self.__new_service_path)
+        #     file_util.del_path(self.__new_service_path + "/tmp")
         # 创建启动脚本
         cmd = "cd " + self.__new_service_path + " &&"
         cmd += " nohup /opt/jdk/jre/bin/java -jar"
@@ -132,10 +134,12 @@ class ServiceHandler:
         try:
             if path == "":
                 path = self.__new_service_path
-            # cmd = "cd " + path + " &&"
-            # cmd += " kill -9 `cat " + self.__pid + "`"
+            cmd = "cd " + path
+            cmd += " && rm -rf logs/*"
+            cmd += " && rm -rf lib/*"
             port_list = self.__ini_config.get_service_port_list(self.__service_name, path)
-            cmd_util.exec_cmd("kill -9 `ps -ef | grep 'dubbo.protocol.port=" + port_list[0] + "' | grep -v 'grep' | awk '{print $2}'`")
+            cmd += " && kill -9 `ps -ef | grep 'dubbo.protocol.port=" + port_list[0] + "' | grep -v 'grep' | awk '{print $2}'`"
+            cmd_util.exec_cmd(cmd)
         except Exception:
             logging.error("stop tomcat fail. Don't care about")
 

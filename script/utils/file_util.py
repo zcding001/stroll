@@ -156,10 +156,23 @@ def copy_file(src_file_path, dst_path, only_parent=False):
 
 
 def copy_path(src_path, dst_path, remove=False):
+    """
+    将src_path下的资源复制到dst_path
+    :param src_path: 源路径
+    :param dst_path: 目的路径
+    :param remove: 删除目的路径
+    :return: None
+    """
     logging.info("copy file from [%s] to [%s]", src_path, dst_path)
     if remove and os.path.exists(dst_path) and os.path.isdir(dst_path):
         shutil.rmtree(dst_path)
-    shutil.copytree(src_path, dst_path)
+    # shutil.copytree(src_path, dst_path)
+    for root, dirs, files in os.walk(src_path):
+        for f in files:
+            f_tmp = root + os.path.sep + f
+            logging.info("文件路径: %s", f_tmp)
+            dst_f = dst_path + f_tmp.replace(src_path, "")
+            copy_file(f_tmp, dst_f, only_parent=True)
 
 
 def del_path(path, *file_name):
