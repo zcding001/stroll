@@ -4,7 +4,8 @@
 # desc      :   编译jar、war
 
 from handler import config_handler
-from utils import cmd_util, file_util
+from utils import cmd_util, file_util, lock_util
+from exception.lock_exception import LockException
 import os
 import logging
 
@@ -19,9 +20,16 @@ def build_project(sec_name, service_name=""):
     :return: None
     """
     build_handler = BuildHandler(config_handler.ConfigHandler(sec_name))
-    build_handler._git_pull()
-    build_handler._copy_properties()
-    build_handler._build_project(service_name)
+    key = ".lock_" + sec_name
+    try:
+        if lock_util.try_lock(key):
+            build_handler._git_pull()
+            build_handler._copy_properties()
+            build_handler._build_project(service_name)
+        else:
+            raise LockException("获取锁失败")
+    finally:
+        lock_util.free_lock(key)
 
 
 class BuildHandler:
