@@ -28,7 +28,7 @@ class ConfigHandler:
 
     __default_options = {"producer_try_times": 20,
                          "customer_try_times": 80,
-                         "proxy_host": "192.168.1.249",
+                         "proxy_host": "10.112.12.204",
                          "branch_name": "master",
                          "producer_protocol_port_start": 6000,
                          "producer_debug_port_start": 5000,
