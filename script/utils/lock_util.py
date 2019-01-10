@@ -20,7 +20,7 @@ def try_lock(key, try_times=30):
     times = 1
     path = os.path.abspath("./output/lock") + os.path.sep + key
     while times <= try_times:
-        logging.info("第[%s]次获取锁", times)
+        logging.info("第[%s]次获取[%s]锁", times, key)
         try:
             if not os.path.exists(path) and not os.path.isdir(path):
                 os.makedirs(path)
