@@ -4,11 +4,13 @@
 # desc      :   入口函数
 
 from handler import service_handler, config_handler, jenkins_config_handler, build_handler, running_env_handler, container_handler
-from utils import file_util, cmd_util, http_util
+from utils import file_util, cmd_util, http_util, lock_util
 import sys
 import os
 import logging
 import coloredlogs
+import shutil
+import time
 
 # pip install coloredlogs
 coloredlogs.install(level=logging.DEBUG, fmt='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s')
@@ -65,6 +67,11 @@ if __name__ == "__main__":
     # print(os.path.getctime(os.path.abspath("./config/nginx.conf")))
     # print(test_file_create_time_sort())
     # test_log_color()
-    test_http_util()
+    # test_http_util()
+    # configHandler = config_handler.get_node_info("stroll_cxj_master")
+    # path = "D:/test/py_path/"
+    # file_util.copy_path(path + "/tmp/", path)
+    lock_util.free_lock("aa/.a_lock")
+    logging.info(lock_util.try_lock("aa/.a_lock"))
 
 

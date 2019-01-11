@@ -28,7 +28,7 @@ class ConfigHandler:
 
     __default_options = {"producer_try_times": 20,
                          "customer_try_times": 80,
-                         "proxy_host": "192.168.1.249",
+                         "proxy_host": "10.112.12.204",
                          "branch_name": "master",
                          "producer_protocol_port_start": 6000,
                          "producer_debug_port_start": 5000,
@@ -40,8 +40,8 @@ class ConfigHandler:
                          "customer_suffix": "-services",
                          "version": "-1.0-SNAPSHOT",
                          "proxy_ssh_port": "22",
-                         "debug": 1,
-                         "agent": 0,
+                         "debug": "1",
+                         "agent": "0",
                          "agent_ip": "192.168.1.249:11800",
                          "backup_suffix": "_backup"}
 
@@ -61,7 +61,11 @@ class ConfigHandler:
         self.producer_try_times = int(self.__get_value("producer_try_times", sec_name="global"))
         self.customer_try_times = int(self.__get_value("customer_try_times", sec_name="global"))
         logging.debug("*****global config info*************************")
-        logging.debug("*dst_path=%s, mvn_path=%s" % (self.dst_path, self.mvn_path))
+        logging.debug("*dst_path=%s", self.dst_path)
+        logging.debug("*mvn_path=%s", self.mvn_path)
+        logging.debug("*container_root_path=%s", self.container_root_path)
+        logging.debug("*producer_try_times=%s", self.producer_try_times)
+        logging.debug("*customer_try_times=%s", self.customer_try_times)
         logging.debug("*****global config info*************************")
         # 加载jenkins配置
         self.config_xml_path = os.path.abspath(self.__config.get("jenkins", "config_xml_path"))
@@ -70,6 +74,9 @@ class ConfigHandler:
         logging.debug("*config_xml_path=%s, job_path=%s" % (self.config_xml_path, self.job_dst_path))
         logging.debug("*****jenkins config info************************")
         self.__get_config(sec_name)
+        logging.debug("*****config info************************")
+        logging.info(self.__dict__)
+        logging.debug("*****config info************************")
 
     def __get_config(self, sec_name):
         """
@@ -101,7 +108,6 @@ class ConfigHandler:
         self.version = self.__get_value("version")
         logging.debug("*****node config info***************************")
         logging.debug("agent=%s" % self.agent)
-        logging.debug("*src_path=%s, env_path=%s, producer_list=%s, customer_list=%s, branch_name=%s, proxy_tomcat_port=%s, backup_suffix=%s" % (self.src_path, self.env_path, self.producer_list, self.customer_list, self.branch_name, self.proxy_tomcat_port, self.backup_suffix))
         logging.debug("*****node config info***************************")
 
     def __get_value(self, option, sec_name=""):
@@ -208,6 +214,6 @@ class ConfigHandler:
         interval = self.producer_list.index(name)
         if path.endswith(self.backup_suffix):
             interval += 100
-        port1 = int(self.producer_debug_port_start) + interval
-        port2 = int(self.producer_protocol_port_start) + interval
+        port1 = int(self.producer_protocol_port_start) + interval
+        port2 = int(self.producer_debug_port_start) + interval
         return [str(port1), str(port2)]

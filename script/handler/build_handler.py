@@ -4,7 +4,8 @@
 # desc      :   编译jar、war
 
 from handler import config_handler
-from utils import cmd_util, file_util
+from utils import cmd_util, file_util, lock_util
+from exception.lock_exception import LockException
 import os
 import logging
 
@@ -19,9 +20,16 @@ def build_project(sec_name, service_name=""):
     :return: None
     """
     build_handler = BuildHandler(config_handler.ConfigHandler(sec_name))
-    build_handler._git_pull()
-    build_handler._copy_properties()
-    build_handler._build_project(service_name)
+    key = ".lock_" + sec_name
+    try:
+        if lock_util.try_lock(key, try_times=60):
+            build_handler._git_pull()
+            build_handler._copy_properties()
+            build_handler._build_project(service_name)
+        else:
+            raise LockException("获取锁失败")
+    finally:
+        lock_util.free_lock(key)
 
 
 class BuildHandler:
@@ -67,6 +75,8 @@ class BuildHandler:
             file_util.del_path(dst_path)
             file_util.copy_file(service_file, dst_path)
             file_util.copy_file(os.path.abspath(self.__env_path + "/common/log4j.xml"), file_util.get_parent_path(dst_path))
+            # 删除默认的log4j配置文件
+            # file_util.del_path(file_util.get_parent_path(dst_path), "log4j.properties")
 
         # 复制web资源
         web_file_list = file_util.list_files(self.__env_path, root_name="web-conf")
@@ -76,7 +86,6 @@ class BuildHandler:
             dst_path = os.path.abspath(self.__ini_config.get_web_resources_path(name))
             file_util.del_path(dst_path)
             file_util.copy_file(web_file, dst_path)
-            file_util.copy_file(os.path.abspath(self.__env_path + "/common/log4j.xml"), file_util.get_parent_path(dst_path))
 
     def _build_project(self, service_name=""):
         """
