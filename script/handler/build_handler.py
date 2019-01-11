@@ -22,7 +22,7 @@ def build_project(sec_name, service_name=""):
     build_handler = BuildHandler(config_handler.ConfigHandler(sec_name))
     key = ".lock_" + sec_name
     try:
-        if lock_util.try_lock(key):
+        if lock_util.try_lock(key, try_times=60):
             build_handler._git_pull()
             build_handler._copy_properties()
             build_handler._build_project(service_name)
